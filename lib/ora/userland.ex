@@ -283,10 +283,10 @@ defmodule Ora.Userland do
     end
   end
 
-  defp confirm_user_multi(user) do
+  defp confirm_user_multi(user, context \\ "confirm") do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, ["confirm"]))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, [context]))
   end
 
   ## Reset password
@@ -348,6 +348,52 @@ defmodule Ora.Userland do
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+
+  @doc ~S"""
+  Delivers magic log in link to the given user.
+
+  ## Examples
+
+      iex> deliver_user_magic_log_in(user, &url(~p"/users/log_in/magic/verify/#{&1})")
+      {:ok, %{to: ..., body: ...}}
+
+  """
+  def deliver_user_magic_log_in(%User{} = user, magic_log_in_url_fun)
+      when is_function(magic_log_in_url_fun, 1) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "magic")
+    user_token = Repo.insert!(user_token)
+    UserNotifier.deliver_magic_log_in(user, magic_log_in_url_fun.(encoded_token))
+    user_token
+  end
+
+  @doc """
+  Verifies a magic log in token and broadcasts it via pubsub.
+  """
+  @spec magic_log_in_user(String.t()) :: {:ok, User.t()} | :error
+  def magic_log_in_user(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "magic"),
+         %User{} = user <- Repo.one(query) do
+      Phoenix.PubSub.broadcast(Ora.PubSub, "magic:#{user.session_id}", {:magic_log_in, token})
+      {:ok, user}
+    else
+      _ -> :error
+    end
+  end
+
+  @doc """
+  Verifies a magic log in token and returns the authenticated user. Deletes the token.
+  """
+  @spec complete_magic_log_in_user(String.t()) :: {:ok, User.t()} | :error
+  def complete_magic_log_in_user(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "magic"),
+         %User{} = user <- Repo.one(query),
+         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user, "magic")) do
+      {:ok, user}
+    else
+      _ -> :error
     end
   end
 end

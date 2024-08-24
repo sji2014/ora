@@ -8,6 +8,21 @@ defmodule OraWeb.UserSessionController do
     create(conn, params, "Account created successfully!")
   end
 
+  def create(conn, %{"_action" => "magic", "user" => %{"token" => token}}) do
+    case Userland.complete_magic_log_in_user(token) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "Welcome back!")
+        |> UserAuth.log_in_user(user)
+
+      :error ->
+        conn
+        |> put_flash(:error, "Failed to complete magic log-in.")
+        |> redirect(to: ~p"/users/log_in/magic")
+    end
+  end
+
+
   def create(conn, %{"_action" => "password_updated"} = params) do
     conn
     |> put_session(:user_return_to, ~p"/users/settings")

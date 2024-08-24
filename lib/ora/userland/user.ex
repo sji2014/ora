@@ -2,11 +2,13 @@ defmodule Ora.Userland.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
+    field :session_id, :string, virtual: true
     field :confirmed_at, :utc_datetime
 
     timestamps(type: :utc_datetime)

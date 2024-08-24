@@ -8,11 +8,15 @@ defmodule Ora.Userland.UserToken do
 
   # It is very important to keep the reset password token expiry short,
   # since someone with access to the email may take over the account.
+  @magic_link_validity_in_days 1
   @reset_password_validity_in_days 1
   @confirm_validity_in_days 7
   @change_email_validity_in_days 7
   @session_validity_in_days 60
 
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
+  @foreign_key_type :binary_id
+  @timestamps_opts [type: :utc_datetime_usec]
   schema "users_tokens" do
     field :token, :binary
     field :context, :string
@@ -117,7 +121,8 @@ defmodule Ora.Userland.UserToken do
           from token in by_token_and_context_query(hashed_token, context),
             join: user in assoc(token, :user),
             where: token.inserted_at > ago(^days, "day") and token.sent_to == user.email,
-            select: user
+            select: user,
+          select_merge: %{session_id: token.id}
 
         {:ok, query}
 
@@ -128,6 +133,7 @@ defmodule Ora.Userland.UserToken do
 
   defp days_for_context("confirm"), do: @confirm_validity_in_days
   defp days_for_context("reset_password"), do: @reset_password_validity_in_days
+  defp days_for_context("magic"), do: @magic_link_validity_in_days
 
   @doc """
   Checks if the token is valid and returns its underlying lookup query.

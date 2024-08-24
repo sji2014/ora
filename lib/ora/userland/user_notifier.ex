@@ -1,3 +1,4 @@
+
 defmodule Ora.Userland.UserNotifier do
   import Swoosh.Email
 
@@ -72,6 +73,26 @@ defmodule Ora.Userland.UserNotifier do
     #{url}
 
     If you didn't request this change, please ignore this.
+
+    ==============================
+    """)
+  end
+
+
+  @doc """
+  Deliver a magic log in link to a user email.
+  """
+  def deliver_magic_log_in(user, url) do
+    deliver(user.email, "Magic log-in link", """
+    ==============================
+
+    Hi #{user.email},
+
+    Log in by visiting the URL below:
+
+    #{url}
+
+    This magic link will log you in on the device you requested it from.
 
     ==============================
     """)

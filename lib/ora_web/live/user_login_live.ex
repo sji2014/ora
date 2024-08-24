@@ -30,6 +30,16 @@ defmodule OraWeb.UserLoginLive do
             Log in <span aria-hidden="true">→</span>
           </.button>
         </:actions>
+        <:actions>
+        <span class="text-2xl" > OR </span>
+        </:actions>
+        <:actions>
+
+          <.link href={~p"/users/log_in/magic"} class="text-sm font-semibold">
+            Log in with magic link straight to email
+          </.link>
+
+        </:actions>
       </.simple_form>
     </div>
     """

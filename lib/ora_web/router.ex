@@ -19,7 +19,7 @@ defmodule OraWeb.Router do
 
   scope "/", OraWeb do
     pipe_through :browser
-
+    live "/", TimelineLive, :home
     # get "/", PageController, :home
     # get "/counter", CounterController, :home
   end
@@ -40,7 +40,6 @@ defmodule OraWeb.Router do
 
     scope "/dev" do
       pipe_through :browser
-
       live_dashboard "/dashboard", metrics: OraWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
@@ -53,11 +52,12 @@ defmodule OraWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{OraWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live "/", TimelineLive, :home
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/log_in/magic", UserMagicLoginLive, :log_in
+      live "/users/log_in/magic/verify/:token", UserMagicLoginLive, :verify
     end
 
     post "/users/log_in", UserSessionController, :create
@@ -82,6 +82,7 @@ defmodule OraWeb.Router do
       on_mount: [{OraWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
+      live "/users/log_in/magic/verify", UserMagicLoginLive, :verify
     end
   end
 end
