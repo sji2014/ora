@@ -1,4 +1,4 @@
-defmodule OraWeb.TimelineLive do
+defmodule OraWeb.TalkLive do
   use OraWeb, :live_view
   use LiveSvelte.Components
 

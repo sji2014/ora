@@ -19,7 +19,9 @@ defmodule OraWeb.Router do
 
   scope "/", OraWeb do
     pipe_through :browser
-    live "/", TimelineLive, :home
+    live "/", HomeLive, :home
+    live "/talk", TalkLive, :home
+    live "/draw", DrawLive, :home
     # get "/", PageController, :home
     # get "/counter", CounterController, :home
   end
