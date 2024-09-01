@@ -25,16 +25,23 @@ defmodule OraWeb.HomeLive do
     <div>
     <div class="flex bg-black flex-col h-screen justify-between overflow-hidden">
   <main class="flex text-white text-center flex-col mb-auto h-3/4">
-  <%= @year %>
-  <div :if={@month} class="flex items-center flex-col gap-2 h-full overflow-y-scroll" style="max-height: 90vh;">
-      <img :for={p <- @photos[@month]} src={p} class="relative w-48 h-48 bg-gray-800 bg-cover bg-center transition-transform duration-1000 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
+  <div :if={@month} class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
+      <div class="animate-marquee hover:animate-none">
+      <img :for={p <- @photos[@month]} src={p} class="relative w-48 py-3 h-48 transition-transform duration-1000 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
+      </div>
   </div>
+  <br>
+  <span class="text-2xl pt-6 ">
+  <%= @year %>
+  </span>
   </main>
   <.Time socket={@socket} />
   </div>
     </div>
     """
   end
+
+  # auto scroll when hover
 
   def mount(_params, _session, socket) do
     OraWeb.Endpoint.subscribe(@topic)

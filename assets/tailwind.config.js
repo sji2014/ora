@@ -14,6 +14,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        marquee: 'marquee 10s linear infinite',
+
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateY(200px)' },
+          '100%': { transform: 'translateY(-200px)' },
+        },
+      },
       colors: {
         brand: "#006a51",
       }
