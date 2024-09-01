@@ -1,7 +1,7 @@
 <script>
   import { onMount, tick } from 'svelte';
   import { tweened } from 'svelte/motion';
-  import { cubicOut, quintOut} from 'svelte/easing';
+  import { cubicOut, quintOut } from 'svelte/easing';
   import { fade, fly, scale } from 'svelte/transition';
 
   // Constants
@@ -19,6 +19,7 @@
   let zoomedMonthId = null;
   let isTransitioning = false;
   let timelineWidth, timelineHeight;
+  export let live
 
   // Generate initial month data
   let months = Array.from({ length: TOTAL_MONTHS }, (_, index) => ({
@@ -26,7 +27,7 @@
     height: Math.floor(Math.random() * 75) + 25,
   }));
 
-   let zoomScale = tweened(5, {
+  let zoomScale = tweened(5, {
     duration: 300,
     easing: quintOut
   });
@@ -35,7 +36,7 @@
     duration: 200,
     easing: cubicOut
   });
-  
+
   onMount(() => {
     const resizeObserver = new ResizeObserver(centerTimeline);
     resizeObserver.observe(timelineElement);
@@ -55,6 +56,7 @@
     if (zoomedMonthId === monthId) {
       await zoomOut();
     } else {
+      live.pushEvent("pushMonth", {month: monthId}, () => {})
       await zoomIn(monthId);
     }
     isTransitioning = false;
@@ -117,27 +119,20 @@ async function zoomOut() {
     const dragDistance = (event.pageX - timelineElement.offsetLeft - dragStartX) * 2;
     timelineElement.scrollLeft = initialScrollLeft - dragDistance;
   }
-  
+
   function getZoomTransform(monthId) {
     if (zoomedMonthId === null) return 'scale(1)';
-
-    const scale = monthId === zoomedMonthId
-      ? Math.min(timelineWidth, timelineHeight) / 200
-      : 0.1;
-
+    const scale = monthId === zoomedMonthId ? Math.min(timelineWidth, timelineHeight) / 200 : 0.1;
     const centerX = timelineWidth / 2;
     const centerY = timelineHeight / 2;
     const translateX = (centerX - monthId * MONTH_WIDTH) * (1 - scale) / scale;
     const translateY = centerY * (1 - scale) / scale;
-
     return `translate(${translateX}px, ${translateY}px) scale(${scale})`;
   }
 </script>
 
-<div class="font-mono text-center bg-black text-green-500 min-h-screen flex flex-col p-4">
-  <h1 class="text-4xl font-bold my-8" class:invisible={zoomedMonthId !== null}>
-    timeline bois
-  </h1>
+<div>
+
 
   <div
     bind:this={timelineElement}
@@ -145,7 +140,7 @@ async function zoomOut() {
     on:mousemove={drag}
     on:mouseup={stopDragging}
     on:mouseleave={stopDragging}
-    class="flex-1 overflow-x-auto cursor-grab active:cursor-grabbing select-none relative"
+    class="flex-2 overflow-x-auto cursor-grab active:cursor-grabbing select-none relative"
     bind:clientWidth={timelineWidth}
     bind:clientHeight={timelineHeight}
   >
@@ -176,27 +171,6 @@ async function zoomOut() {
               stroke-width={zoomedMonthId === index + 1 ? "50" : "5"}
               class="pointer-events-none hover:stroke-green-300 duration-200"
             />
-            {#if zoomedMonthId === index + 1}
-              <foreignObject x={index * MONTH_WIDTH - 250} y="-600" width="500" height="500">
-                <div
-                  in:fade={{ duration: 300, delay: 200 }}
-                  out:fade={{ duration: 200 }}
-                  class="w-full h-full bg-green-900 bg-opacity-20 rounded-lg shadow-inner flex items-center justify-center">
-    <button
-      on:click={zoomOut}
-      class="fixed right-0 top-2/7 text-white hover:text-green-300"
-    >
-      &times;
-    </button>
-                  <div in:fly={{ y: 20, duration: 300, delay: 300 }} class="text-4xl">
-                    Month {index + 1}
-                    <div class="mt-4 text-xs">
-                      alamak Gallery here
-                    </div>
-                  </div>
-                </div>
-              </foreignObject>
-            {/if}
           </g>
         {/each}
       </g>
