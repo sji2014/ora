@@ -16,6 +16,7 @@ module.exports = {
     extend: {
       animation: {
         marquee: 'marquee 10s linear infinite',
+        gradient: 'gradient-anim 30s ease infinite'
 
       },
       keyframes: {
@@ -23,9 +24,27 @@ module.exports = {
           '0%': { transform: 'translateY(200px)' },
           '100%': { transform: 'translateY(-200px)' },
         },
+        'gradient-anim': {
+          '0%': { backgroundPosition: '0% 0%' },
+          '10%': { backgroundPosition: '50% 0%' },
+          '20%': { backgroundPosition: '80% 70%' },
+          '30%': { backgroundPosition: '20% 30%' },
+          '36%': { backgroundPosition: '0% 20%' },
+          '55%': { backgroundPosition: '100% 0%' },
+          '64': { backgroundPosition: '100% 100%' },
+          '72%': { backgroundPosition: '0% 100%' },
+          '80%': { backgroundPosition: '0% 90%' },
+          '88%': { backgroundPosition: '100% 0%' },
+          '100%': { backgroundPosition: '100% 100%' },
+        }
+      },
+      fontFamily: {
+        rome: ['"Karm"', "sans-serif"],
+        cent: ['"Vyas", "sans-serif"']
       },
       colors: {
-        brand: "#006a51",
+        brand: "#006837",
+        brandDark: "#333333"
       }
     },
   },

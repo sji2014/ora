@@ -23,16 +23,16 @@ defmodule OraWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <div>
-    <div class="flex bg-black flex-col h-screen justify-between overflow-hidden">
-  <main class="flex text-white text-center flex-col mb-auto h-3/4">
+    <div class="flex bg-[linear-gradient(45deg,_#faf9f6,_#bae6de)] bg-[length:500%_500%] animate-gradient flex-col h-screen justify-between overflow-hidden">
+  <main class="flex text-white text-center flex-col mb-auto h-4/5">
   <div :if={@month} class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
       <div class="animate-marquee hover:animate-none">
       <img :for={p <- @photos[@month]} src={p} class="relative w-48 py-3 h-48 transition-transform duration-1000 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
       </div>
   </div>
   <br>
-  <span class="text-2xl pt-6 ">
-  <%= @year %>
+  <span :if={@time} class="text-2xl text-brand pt-6 ">
+  <%= @time.month %>
   </span>
   </main>
   <.Time socket={@socket} />
@@ -46,10 +46,10 @@ defmodule OraWeb.HomeLive do
   def mount(_params, _session, socket) do
     OraWeb.Endpoint.subscribe(@topic)
 
-    {:ok, assign(socket, year: nil, month: nil, photos: gen_map())}
+    {:ok, assign(socket, time: %{month: nil, year: nil}, month: nil, photos: gen_map())}
   end
 
-  def handle_event("pushMonth", %{"month" => month}, socket), do: {:noreply, assign(socket, month: month, year: convert(month))}
+  def handle_event("pushMonth", %{"month" => month}, socket), do: {:noreply, assign(socket, month: month, time: convert(month))}
 
   def handle_event("send_message", payload, socket) do
     payload =
@@ -81,17 +81,12 @@ defmodule OraWeb.HomeLive do
   end
 
   def convert(index) when index >= 1 and index <= 48 do
+    month= rem(index, 4)
     months = [
-      "January 2011", "February 2011", "March 2011", "April 2011", "May 2011", "June 2011",
-      "July 2011", "August 2011", "September 2011", "October 2011", "November 2011", "December 2011",
-      "January 2012", "February 2012", "March 2012", "April 2012", "May 2012", "June 2012",
-      "July 2012", "August 2012", "September 2012", "October 2012", "November 2012", "December 2012",
-      "January 2013", "February 2013", "March 2013", "April 2013", "May 2013", "June 2013",
-      "July 2013", "August 2013", "September 2013", "October 2013", "November 2013", "December 2013",
-      "January 2014", "February 2014", "March 2014", "April 2014", "May 2014", "June 2014",
-      "July 2014", "August 2014", "September 2014", "October 2014", "November 2014", "December 2014"
-    ]
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"]
 
-    Enum.at(months, index - 1)
+    %{month: Enum.at(months, month - 1),
+      year: Enum.at([2011, 2012, 2013, 2014], floor(index/4)-1)}
   end
 end

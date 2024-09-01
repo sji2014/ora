@@ -152,22 +152,30 @@ async function zoomOut() {
             style="transition: transform 0.5s ease-out; {getZoomTransform(index + 1)}"
             class="cursor-pointer"
           >
+            <defs>
+              <clipPath id="round-corner-{index + 1}">
+                <rect x={index * MONTH_WIDTH} y="-100" width={MONTH_WIDTH} height="200" rx="5" ry="5"/>
+              </clipPath>
+            </defs>
+
             <rect
               x={index * MONTH_WIDTH}
-              y="-100"
+              y="-200"
               width={MONTH_WIDTH}
-              height="200"
+              height="300"
               fill="transparent"
-              stroke={zoomedMonthId === index + 1 ? "#00ff00" : "transparent"}
+
+              stroke={zoomedMonthId === index + 1 ? "#006837" : "transparent"}
               stroke-width="1"
               on:mouseenter={() => handleMonth(index + 1)}
+              on:touchstart={() => handleMonth(index + 1)}
             />
             <line
               x1={index * MONTH_WIDTH + MONTH_WIDTH / 2}
-              y2={zoomedMonthId === index + 1 ? 100 : 10}
+              y2={zoomedMonthId === index + 1 ? 50 : 10}
               x2={index * MONTH_WIDTH + MONTH_WIDTH / 2}
-              y1={zoomedMonthId === index + 1 ? -100 : -100}
-              stroke="#00ff00"
+              y1={zoomedMonthId === index + 1 ? -100 : -40}
+              stroke="#006837"
               stroke-width={zoomedMonthId === index + 1 ? "50" : "5"}
               class="pointer-events-none hover:stroke-green-300 duration-200"
             />
