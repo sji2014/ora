@@ -15,14 +15,13 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        marquee: 'marquee 10s linear infinite',
-        gradient: 'gradient-anim 30s ease infinite'
-
+        marquee: 'marquee 30s linear infinite',
+        gradient: 'gradient-anim 30s ease infinite',
       },
       keyframes: {
         marquee: {
-          '0%': { transform: 'translateY(200px)' },
-          '100%': { transform: 'translateY(-200px)' },
+          '0%': {transform: 'translateY(0)'},
+          '100%': {transform: 'translateY(-100em)'},
         },
         'gradient-anim': {
           '0%': { backgroundPosition: '0% 0%' },

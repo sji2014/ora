@@ -24,9 +24,13 @@ defmodule OraWeb.HomeLive do
     ~H"""
     <div>
     <div class="flex bg-[linear-gradient(45deg,_#faf9f6,_#bae6de)] bg-[length:500%_500%] animate-gradient flex-col h-screen justify-between overflow-hidden">
-  <main class="flex text-white text-center flex-col mb-auto h-4/5">
-  <div :if={@month} class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
-      <div class="animate-marquee hover:animate-none">
+    <svg :if={!@month} viewBox="0 0 100 100" class="w-full h-full max-w-md mx-auto" aria-hidden="true">
+    <image xlink:href="/images/logo.svg" x="10" y="5" width="80" height="90"/>
+    </svg>
+
+  <main :if={@month} class="flex text-white text-center flex-col mb-auto h-4/5">
+  <div  class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
+      <div class="animate-marquee hover:[animation-play-state:paused]">
       <img :for={p <- @photos[@month]} src={p} class="relative w-48 py-3 h-48 transition-transform duration-1000 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
       </div>
   </div>
@@ -87,6 +91,6 @@ defmodule OraWeb.HomeLive do
       "July", "August", "September", "October", "November", "December"]
 
     %{month: Enum.at(months, month - 1),
-      year: Enum.at([2011, 2012, 2013, 2014], floor(index/4)-1)}
+      year: Enum.at([2011, 2012, 2013, 2014], floor(index/12)-1)}
   end
 end
