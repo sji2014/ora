@@ -22,26 +22,35 @@ defmodule OraWeb.HomeLive do
 
   def render(assigns) do
     ~H"""
-    <div>
-    <div class="flex bg-[linear-gradient(45deg,_#faf9f6,_#bae6de)] bg-[length:500%_500%] animate-gradient flex-col h-screen justify-between overflow-hidden">
-    <svg :if={!@month} viewBox="0 0 100 100" class="w-full h-full max-w-md mx-auto" aria-hidden="true">
-    <image xlink:href="/images/logo.svg" x="10" y="5" width="80" height="90"/>
+    <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
+    <div class="flex flex-col justify-between  h-screen overflow-hidden">
+    <svg :if={!@month} viewBox="0 0 100 100" class="w-1/2 h-1/2 max-w-md mx-auto duration-5000 animate-pulse ease-in-out  hover:animate-none"  aria-hidden="true">
+    <image xlink:href="/images/logo.svg" width="100" height="120"/>
     </svg>
 
-  <main :if={@month} class="flex text-white text-center flex-col mb-auto h-4/5">
-  <div  class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
+    <main :if={@month} class="flex text-white text-center flex-col mb-auto h-4/5">
+      <div  class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
       <div class="animate-marquee hover:[animation-play-state:paused]">
-      <img :for={p <- @photos[@month]} src={p} class="relative w-48 py-3 h-48 transition-transform duration-1000 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
+      <img :for={p <- @photos[@month]} src={p} class="relative w-48 py-3 h-48 transition-transform duration-700 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
       </div>
-  </div>
-  <br>
-  <span :if={@time} class="text-2xl text-brand pt-6 ">
-  <%= @time.month %>
-  </span>
-  </main>
-  <.Time socket={@socket} />
-  </div>
+      </div>
+      <br>
+      <span :if={@time} class="text-2xl text-brand pt-6 ">
+      <%= @time.month %>
+      </span>
+     </main>
+
+    <.Time id="timeline" timelineHeight="200" socket={@socket} />
     </div>
+    <div class="absolute bottom-0 w-full ">
+  <nav id="year" class="flex justify-between p-2 bg-transparent border">
+    <a :for={y <- 2011..2014} class={[y==@time.year && "text-sji text-sm" || "text-gray-400 hover:text-brand text-xs", "nav-item relative flex flex-col items-center justify-center  hover:animate-flicker transition duration-300"]}>
+        <span class="font-semibold"><%= y %></span>
+    </a>
+    </nav>
+
+    </div>
+    </body>
     """
   end
 
@@ -85,12 +94,12 @@ defmodule OraWeb.HomeLive do
   end
 
   def convert(index) when index >= 1 and index <= 48 do
-    month= rem(index, 4)
+    month= rem(index, 12)
     months = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"]
 
     %{month: Enum.at(months, month - 1),
-      year: Enum.at([2011, 2012, 2013, 2014], floor(index/12)-1)}
+      year: Enum.at([2011, 2012, 2013, 2014], floor(index/12))}
   end
 end

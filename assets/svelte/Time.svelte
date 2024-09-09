@@ -18,7 +18,8 @@
   let initialScrollLeft;
   let zoomedMonthId = null;
   let isTransitioning = false;
-  let timelineWidth, timelineHeight;
+  export let id;
+  export let timelineWidth, timelineHeight;
   export let live
 
   // Generate initial month data
@@ -51,12 +52,13 @@
   
 
   async function handleMonth(monthId) {
+    console.log(monthId)
   if (!isDragging && !isTransitioning) {
     isTransitioning = true;
     if (zoomedMonthId === monthId) {
       await zoomOut();
     } else {
-      live.pushEvent("pushMonth", {month: monthId}, () => {})
+      live.pushEvent("pushMonth", {month: monthId+1}, () => {})
       await zoomIn(monthId);
     }
     isTransitioning = false;
@@ -131,16 +133,14 @@ async function zoomOut() {
   }
 </script>
 
-<div>
-
-
   <div
+    id={id}
     bind:this={timelineElement}
     on:mousedown={startDragging}
     on:mousemove={drag}
     on:mouseup={stopDragging}
     on:mouseleave={stopDragging}
-    class="flex-2 overflow-x-auto cursor-grab active:cursor-grabbing select-none relative"
+    class="flex-none overflow-x-auto cursor-grab active:cursor-grabbing select-none no-scrollbar"
     bind:clientWidth={timelineWidth}
     bind:clientHeight={timelineHeight}
   >
@@ -152,36 +152,33 @@ async function zoomOut() {
             style="transition: transform 0.5s ease-out; {getZoomTransform(index + 1)}"
             class="cursor-pointer"
           >
-            <defs>
-              <clipPath id="round-corner-{index + 1}">
-                <rect x={index * MONTH_WIDTH} y="-100" width={MONTH_WIDTH} height="200" rx="5" ry="5"/>
-              </clipPath>
-            </defs>
+
 
             <rect
-              x={index * MONTH_WIDTH}
-              y="-200"
+              x={(index) * MONTH_WIDTH}
+              y="-100"
               width={MONTH_WIDTH}
-              height="300"
+              height="200"
               fill="transparent"
-
-              stroke={zoomedMonthId === index + 1 ? "#006837" : "transparent"}
-              stroke-width="1"
-              on:mouseenter={() => handleMonth(index + 1)}
-              on:touchstart={() => handleMonth(index + 1)}
+              on:mouseenter={() => handleMonth(index)}
+              on:touchstart={() => handleMonth(index)}
             />
-            <line
-              x1={index * MONTH_WIDTH + MONTH_WIDTH / 2}
-              y2={zoomedMonthId === index + 1 ? 50 : 10}
-              x2={index * MONTH_WIDTH + MONTH_WIDTH / 2}
-              y1={zoomedMonthId === index + 1 ? -100 : -40}
-              stroke="#006837"
-              stroke-width={zoomedMonthId === index + 1 ? "50" : "5"}
-              class="pointer-events-none hover:stroke-green-300 duration-200"
+
+            <rect
+              x={index * MONTH_WIDTH + MONTH_WIDTH/4}
+              y={zoomedMonthId === index? "-90" : "-70"}
+              width={zoomedMonthId === index ? MONTH_WIDTH/3 : MONTH_WIDTH/4}
+              height={zoomedMonthId === index ? "90" : "50"}
+              fill="#006837"
+              rx="8"
+              ry="8"
+
+              stroke={zoomedMonthId === index  ? "#006837" : "transparent"}
+              stroke-width="1"
             />
           </g>
         {/each}
       </g>
     </svg>
   </div>
-</div>
+  

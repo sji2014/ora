@@ -14,35 +14,60 @@ module.exports = {
   ],
   theme: {
     extend: {
+      transitionDuration: {
+        '5000': '5000ms',
+      },
       animation: {
         marquee: 'marquee 30s linear infinite',
         gradient: 'gradient-anim 30s ease infinite',
+        flicker: 'flicker 3s linear infinite',
       },
       keyframes: {
         marquee: {
-          '0%': {transform: 'translateY(0)'},
-          '100%': {transform: 'translateY(-100em)'},
+          '0%': {transform: 'translateY(50vh)'},
+          '50%': {transform: 'translateY(-80vh)'},
+          '100%': {transform: 'translateY(88vh)'},
         },
         'gradient-anim': {
           '0%': { backgroundPosition: '0% 0%' },
-          '10%': { backgroundPosition: '50% 0%' },
-          '20%': { backgroundPosition: '80% 70%' },
+          '10%': { backgroundPosition: '20% 0%' },
+          '20%': { backgroundPosition: '40% 0%' },
           '30%': { backgroundPosition: '20% 30%' },
-          '36%': { backgroundPosition: '0% 20%' },
-          '55%': { backgroundPosition: '100% 0%' },
-          '64': { backgroundPosition: '100% 100%' },
-          '72%': { backgroundPosition: '0% 100%' },
-          '80%': { backgroundPosition: '0% 90%' },
-          '88%': { backgroundPosition: '100% 0%' },
-          '100%': { backgroundPosition: '100% 100%' },
+          '36%': { backgroundPosition: '0% 0%' },
+          '72%': { backgroundPosition: '36% 36%' },
+          '80%': { backgroundPosition: '45% 45%' },
+          '88%': { backgroundPosition: '20% 20%' },
+          '100%': { backgroundPosition: '0% 0%' },
+        },
+        flicker: {
+          "0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100%": {
+            opacity: 0.99,
+            textShadow: 
+            "-1px -1px 0 rgba(255, 255, 255, 0.6), " + 
+              "1px -1px 0 rgba(255, 255, 255, 0.6), " + 
+              "-1px 1px 0 rgba(255, 255, 255, 0.6), " + 
+              "1px 1px 0 rgba(255, 255, 255, 0.6), " + 
+              "0 -2px 8px rgba(255, 255, 255, 0.8), " + 
+              "0 0 2px rgba(255, 255, 255, 0.8), " + 
+              "0 0 5px rgba(255, 255, 255, 0.9), " + 
+              "0 0 15px rgba(200, 200, 255, 0.7), " + 
+              "0 0 20px rgba(200, 200, 255, 0.5), " + 
+              "0 2px 3px #00664f"
+          },
+          "20%, 21.9%, 63%, 63.9%, 65%, 69.9%": {
+            opacity: 0.4,
+            textShadow: "none"
+          }
         }
-      },
-      fontFamily: {
-        rome: ['"Karm"', "sans-serif"],
+    },
+    fontFamily: {
+      rome: ['"Karm"', "sans-serif"],
         cent: ['"Vyas", "sans-serif"']
       },
       colors: {
         brand: "#006837",
+        sji: "#00664f",
+        offwhite: "#faf9f6",
         brandDark: "#333333"
       }
     },
