@@ -45,7 +45,7 @@ defmodule OraWeb.HomeLive do
     <div class="absolute bottom-0 w-full ">
   <nav id="year" class="flex justify-between p-2 bg-transparent border">
     <a :for={y <- 2011..2014} class={[y==@time.year && "text-sji text-sm" || "text-gray-400 hover:text-brand text-xs", "nav-item relative flex flex-col items-center justify-center  hover:animate-flicker transition duration-300"]}>
-        <span class="font-semibold"><%= y %></span>
+        <span class="font-semibold cursor-pointer" phx-click="pushYear" phx-value-year={y}><%= y %></span>
     </a>
     </nav>
 
@@ -59,11 +59,18 @@ defmodule OraWeb.HomeLive do
   def mount(_params, _session, socket) do
     OraWeb.Endpoint.subscribe(@topic)
 
-    {:ok, assign(socket, time: %{month: nil, year: nil}, month: nil, photos: gen_map())}
+    {:ok, assign(socket, time: %{month: nil, order: nil,  year: nil}, month: nil, photos: gen_map())}
   end
 
   def handle_event("pushMonth", %{"month" => month}, socket), do: {:noreply, assign(socket, month: month, time: convert(month))}
 
+
+  def handle_event("pushYear", %{"year" => year}, %{assigns: %{time: time}} = socket) do
+    {:noreply, socket
+     #|> assign(time: %{time | year: String.to_integer(year)})
+     |> push_event("pullMonth", %{index: (time.order || 1) - 1 + (String.to_integer(year)-2011)*12})
+    }
+  end
   def handle_event("send_message", payload, socket) do
     payload =
       payload
@@ -100,6 +107,7 @@ defmodule OraWeb.HomeLive do
       "July", "August", "September", "October", "November", "December"]
 
     %{month: Enum.at(months, month - 1),
-      year: Enum.at([2011, 2012, 2013, 2014], floor(index/12))}
+      order: month,
+      year: Enum.at([2011, 2012, 2013, 2014], floor((index-1)/12))}
   end
 end

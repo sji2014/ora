@@ -41,7 +41,15 @@
   onMount(() => {
     const resizeObserver = new ResizeObserver(centerTimeline);
     resizeObserver.observe(timelineElement);
+    live.handleEvent("pullMonth", (time) => {
+      console.log(time.index)
+      handleMonth(time.index)
+      
+      });
     return () => resizeObserver.disconnect();
+    
+
+    
   });
 
   function centerTimeline() {
@@ -124,12 +132,12 @@ async function zoomOut() {
 
   function getZoomTransform(monthId) {
     if (zoomedMonthId === null) return 'scale(1)';
-    const scale = monthId === zoomedMonthId ? Math.min(timelineWidth, timelineHeight) / 200 : 0.1;
+    //const scale = monthId === zoomedMonthId ? Math.min(timelineWidth, timelineHeight) / 200 : 0.1;
     const centerX = timelineWidth / 2;
     const centerY = timelineHeight / 2;
     const translateX = (centerX - monthId * MONTH_WIDTH) * (1 - scale) / scale;
     const translateY = centerY * (1 - scale) / scale;
-    return `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    return `scale(${scale})`;
   }
 </script>
 
@@ -149,7 +157,7 @@ async function zoomOut() {
         {#each months as value, index}
           <g
             id="month-{index + 1}"
-            style="transition: transform 0.5s ease-out; {getZoomTransform(index + 1)}"
+            
             class="cursor-pointer"
           >
 
@@ -179,6 +187,7 @@ async function zoomOut() {
           </g>
         {/each}
       </g>
+      
     </svg>
   </div>
   
