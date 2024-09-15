@@ -7,7 +7,7 @@ defmodule OraWeb.UserMagicLoginLive do
     ~H"""
     <div :if={@step == :auth_ready} class="mx-auto max-w-sm">
       <.header class="text-center">
-        Log in with magic link
+        RSVP for the Reunion
         <:subtitle>
           Enter your email to receive a magic log-in link.
         </:subtitle>
@@ -17,7 +17,7 @@ defmodule OraWeb.UserMagicLoginLive do
         <.input field={@user_form[:email]} type="email" label="Email" required />
         <:actions>
           <.button phx-disable-with="Submitting..." class="w-full">
-            Send a link
+            RSVP 🎉
           </.button>
         </:actions>
       </.simple_form>
@@ -27,7 +27,7 @@ defmodule OraWeb.UserMagicLoginLive do
       <.header class="text-center">
         Waiting...
         <:subtitle>
-          If you have a user account with us, you will receive an email with a link to log in.
+          If you already RSVP'd for the reunion, you will receive an email with a link to log in.
         </:subtitle>
       </.header>
 
@@ -91,29 +91,27 @@ defmodule OraWeb.UserMagicLoginLive do
   end
 
   def mount(%{"success" => "true"} = params, _session, socket) do
-    {:ok, assign(socket, step: :verify_success, email: params["email"])}
-  end
-
-  def mount(%{"success" => "false"}, _session, socket) do
-    {:ok, assign(socket, step: :verify_error)}
-  end
-
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, step: :auth_ready, token: nil)}
-  end
-
-  def handle_params(_params, _uri, socket) do
-    {:noreply,
-     socket
-     |> assign(:user_form, to_form(%{}, as: :user))
+    {:ok, assign(socket, step: :verify_success, email: params["email"])
+    |> assign(:user_form, to_form(%{}, as: :user))
      |> assign(:trigger_submit, false)}
   end
 
-  def handle_event("save", %{"user" => user_params}, socket) do
-    save_user(socket, socket.assigns.live_action, user_params)
+  def mount(%{"success" => "false"}, _session, socket) do
+    {:ok, assign(socket, step: :verify_error)
+    |> assign(:user_form, to_form(%{}, as: :user))
+     |> assign(:trigger_submit, false)
+    }
   end
 
-  def save_user(socket, :log_in, %{"email" => user_email}) do
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, step: :auth_ready, token: nil)
+     |> assign(:user_form, to_form(%{}, as: :user))
+     |> assign(:trigger_submit, false)
+    }
+  end
+
+
+  def handle_event("save", %{"user" => %{"email" => user_email}}, socket) do
     case Userland.get_user_by_email(user_email) do
       %Userland.User{} = u ->
         token = Userland.deliver_user_magic_log_in(u, &url(~p"/users/log_in/magic/verify/#{&1}"))

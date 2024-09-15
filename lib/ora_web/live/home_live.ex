@@ -22,6 +22,9 @@ defmodule OraWeb.HomeLive do
 
   def render(assigns) do
     ~H"""
+    <.modal :if={@rsvp} id="paynow" show={@rsvp} on_cancel={JS.patch("/")} >
+    <%= live_render(@socket, OraWeb.UserMagicLoginLive, id: "magiclink") %>
+    </.modal>
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
     <div class="flex flex-col justify-between  h-screen overflow-hidden">
     <svg :if={!@month} viewBox="0 0 100 100" class="w-1/2 h-1/2 max-w-md mx-auto duration-5000 animate-pulse ease-in-out  hover:animate-none"  aria-hidden="true">
@@ -62,6 +65,10 @@ defmodule OraWeb.HomeLive do
     {:ok, assign(socket, time: %{month: nil, order: nil,  year: nil}, month: nil, photos: gen_map())}
   end
 
+  def handle_params(params, _uri, socket) do
+    {:noreply, action_handler(socket)}
+  end
+
   def handle_event("pushMonth", %{"month" => month}, socket), do: {:noreply, assign(socket, month: month, time: convert(month))}
 
 
@@ -86,6 +93,15 @@ defmodule OraWeb.HomeLive do
     {:noreply, assign(socket, messages: socket.assigns.messages ++ [payload])}
   end
 
+  defp action_handler(%{assigns: %{live_action: :rsvp}} = socket) do
+    socket
+    |> assign(:rsvp, true)
+  end
+
+  defp action_handler(%{assigns: %{live_action: act}} = socket) do
+    socket
+    |> assign(:rsvp, false)
+  end
   def gen_map do
     # Create a map with keys from 1 to random_length
     map = Enum.reduce(1..48, %{}, fn key, acc ->
