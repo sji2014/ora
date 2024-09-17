@@ -70,15 +70,16 @@ defmodule Ora.MixProject do
   #     $ mix setup
   #
   # See the documentation for `Mix` for more info on aliases.
+  # not sure why tailwind not automatically targeting for output dir
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd --cd assets npm install", "assets.setup"],
+      setup: ["deps.get", "ecto.setup", "assets.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing"],
+      "assets.setup": ["cmd --cd assets npm install", "tailwind.install --if-missing"],
       "assets.build": ["tailwind default"],
-      "assets.deploy": ["cmd --cd assets node build.js --deploy", "phx.digest"]
+      "assets.deploy": ["cmd --cd assets node build.js --deploy", "tailwind ora --minify",  "phx.digest"]
     ]
   end
 end

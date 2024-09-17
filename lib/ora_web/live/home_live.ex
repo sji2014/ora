@@ -31,17 +31,17 @@ defmodule OraWeb.HomeLive do
     <image xlink:href="/images/logo.svg" width="100" height="120"/>
     </svg>
 
-    <main :if={@month} class="flex text-white text-center flex-col mb-auto h-4/5">
+    <main :if={@month} class="flex text-white text-center flex-col mb-auto h-2/3">
       <div  class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
       <div class="animate-marquee hover:[animation-play-state:paused]">
       <img :for={p <- @photos[@month]} src={p} class="relative w-48 py-3 h-48 transition-transform duration-700 ease-in-out hover:scale-110 hover:filter-none filter grayscale brightness-50" tabindex="0"/>
       </div>
       </div>
-      <br>
-      <span :if={@time} class="text-2xl text-brand pt-6 ">
+     </main>
+
+    <span :if={@time} class="text-xl text-center text-brand pt-6 ">
       <%= @time.month %>
       </span>
-     </main>
 
     <.Time id="timeline" timelineHeight="200" socket={@socket} />
     </div>

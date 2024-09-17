@@ -10,7 +10,8 @@ module.exports = {
     "./js/**/*.js",
     "./svelte/**/*.svelte",
     "../lib/ora_web.ex",
-    "../lib/ora_web/**/*.*ex"
+    "../lib/ora_web/**/*.*ex",
+    "../lib/ora_web/live/*.*ex"
   ],
   theme: {
     extend: {

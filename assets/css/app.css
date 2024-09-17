@@ -2,4 +2,31 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+
+@layer utilities {
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+     /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+    }
+  }
+
+
+/* /\* This file is for your main application CSS *\/ */
+/* @font-face { */
+/*  font-family: "Times New Roman"; */
+/*  src: url('/fonts/dn/Karm-Medium.woff2') format('woff2'), */
+/*       url('/fonts/dn/Karm-Medium.woff') format('woff'), */
+/*       url('/fonts/dn/Karm-Medium.ttf') format('ttf'); */
+/* } */
+
+/* @font-face { */
+/*  font-family: "Century Schoolbook Roma"; */
+/*  src: url('/fonts/ta/VyasaTA.woff2') format('woff2'), */
+/*       url('/fonts/ta/VyasaTA.woff') format('woff'), */
+/*       url('/fonts/ta/VyasaTA.ttf') format('ttf'); */
+/* } */
