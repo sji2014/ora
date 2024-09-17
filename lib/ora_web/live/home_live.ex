@@ -28,7 +28,12 @@ defmodule OraWeb.HomeLive do
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
     <div class="flex flex-col justify-between  h-screen overflow-hidden">
     <svg :if={!@month} viewBox="0 0 100 100" class="w-1/2 h-1/2 max-w-md mx-auto duration-5000 animate-pulse ease-in-out  hover:animate-none"  aria-hidden="true">
+    <.link
+                    patch={~p"/register"}
+                    class="text-sm leading-6 text-zinc-900 font-semibold hover:text-brand"
+                >
     <image xlink:href="/images/logo.svg" width="100" height="120"/>
+    </.link>
     </svg>
 
     <main :if={@month} class="flex text-white text-center flex-col mb-auto h-2/3">
