@@ -9,7 +9,7 @@ defmodule Ora.Userland.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Ora", "contact@example.com"})
+      |> from({"SJI Class of 2014", "sji@scratchbac.com"})
       |> subject(subject)
       |> text_body(body)
 

@@ -151,20 +151,20 @@ defmodule OraWeb.UserMagicLoginLive do
       %Userland.User{} = user ->
         send(self(), {:deliver_link, user})
       _ ->
-        Process.send_after(self(), {:deliver_link, nil}, Enum.random(500..1500))
+        Process.send_after(self(), {:deliver_link, user_email}, Enum.random(500..1500))
     end
 
-    {:noreply, socket |> assign(:email, user_email)}
+    {:noreply, socket}
   end
 
   def handle_info({:deliver_link, %Userland.User{} = user}, socket) do
     token = Userland.deliver_user_magic_log_in(user, &url(~p"/users/log_in/magic/verify/#{&1}"))
     Phoenix.PubSub.subscribe(Ora.PubSub, "magic:#{token.id}")
-    {:noreply, socket |> assign(:step, :auth_waiting)}
+    {:noreply, socket |> assign(:step, :auth_waiting) |> assign(:email, user.email)}
   end
 
-  def handle_info({:deliver_link, _}, socket) do
-    {:noreply, socket |> assign(:step, :auth_waiting)}
+  def handle_info({:deliver_link, email}, socket) do
+    {:noreply, socket |> assign(:step, :auth_waiting) |> assign(:email, email)}
   end
 
   def handle_info({:magic_log_in, token}, socket) do

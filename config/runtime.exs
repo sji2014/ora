@@ -114,4 +114,16 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+  #
+
+  config :ora, Ora.Mailer,
+  adapter: Swoosh.Adapters.AmazonSES,
+  region: "ap-southeast-1",
+  access_key: System.get_env("SES_ACCESS_KEY_ID"),
+  secret: System.get_env("SES_SECRET_ACCESS_KEY")
+  
+  config :swoosh,
+  api_client: Swoosh.ApiClient.Finch,
+  finch_name: Ora.Finch
+  
 end

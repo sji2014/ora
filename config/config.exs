@@ -31,6 +31,10 @@ config :ora, OraWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :ora, Ora.Mailer, adapter: Swoosh.Adapters.Local
 
+config :swoosh,
+  api_client: Swoosh.ApiClient.Finch,
+  finch_name: Ora.Finch
+
 # Configure esbuild (node based build process esbuild handled there)
 # config :esbuild,
 #   version: "0.17.11",
