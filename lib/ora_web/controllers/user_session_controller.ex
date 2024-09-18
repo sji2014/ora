@@ -52,7 +52,7 @@ defmodule OraWeb.UserSessionController do
       # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
       conn
       |> put_flash(:error, "Invalid email or password")
-      |> redirect(to: ~p"/register")
+      |> redirect(to: ~p"/invite")
   end
 
   def delete(conn, _params) do

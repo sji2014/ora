@@ -28,13 +28,11 @@ defmodule OraWeb.HomeLive do
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
     <div class="flex flex-col justify-between  h-screen overflow-hidden">
     <svg :if={!@month} viewBox="0 0 100 100" class="w-1/2 h-1/2 max-w-md mx-auto duration-5000 animate-pulse ease-in-out  hover:animate-none"  aria-hidden="true">
-    <.link
-                    patch={~p"/register"}
-                    class="text-sm leading-6 text-zinc-900 font-semibold hover:text-brand"
-                >
+    <.link patch={~p"/welcome"} class="text-sm leading-6 text-zinc-900 font-semibold hover:text-brand">
     <image xlink:href="/images/logo.svg" width="100" height="120"/>
     </.link>
     </svg>
+    <.Countdown id="countdown" :if={!@month} dateTime={DateTime.new!(~D[2024-12-07], ~T[10:00:00]) |> DateTime.to_unix()} />
 
     <main :if={@month} class="flex text-white text-center flex-col mb-auto h-2/3">
       <div  class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
@@ -98,7 +96,7 @@ defmodule OraWeb.HomeLive do
     {:noreply, assign(socket, messages: socket.assigns.messages ++ [payload])}
   end
 
-  defp action_handler(%{assigns: %{live_action: action}} = socket) when action in [:rsvp, :login] do
+  defp action_handler(%{assigns: %{live_action: action}} = socket) when action in [:rsvp, :welcome,  :login] do
     socket
     |> assign(:rsvp, true)
   end

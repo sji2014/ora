@@ -19,9 +19,6 @@ defmodule OraWeb.Router do
 
   scope "/", OraWeb do
     pipe_through :browser
-    live "/", HomeLive, :home
-    live "/register", HomeLive, :rsvp
-    live "/login", HomeLive, :login
     live "/talk", TalkLive, :home
     live "/draw", DrawLive, :home
     # get "/", PageController, :home
@@ -56,6 +53,8 @@ defmodule OraWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{OraWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/login", HomeLive, :login
+      live "/invite", HomeLive, :rsvp
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -84,6 +83,8 @@ defmodule OraWeb.Router do
 
     live_session :current_user,
       on_mount: [{OraWeb.UserAuth, :mount_current_user}] do
+      live "/", HomeLive, :home
+      live "/welcome", HomeLive, :welcome
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
       live "/users/log_in/magic/verify", UserMagicLoginLive, :verify

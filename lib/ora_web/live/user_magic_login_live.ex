@@ -11,7 +11,7 @@ defmodule OraWeb.UserMagicLoginLive do
         Log in
         <:subtitle>
           Never RSVP yet?
-          <.link patch={~p"/register"} class="font-semibold text-brand hover:underline">
+          <.link patch={~p"/invite"} class="font-semibold text-brand hover:underline">
             RSVP here
           </.link>
           first
@@ -28,15 +28,34 @@ defmodule OraWeb.UserMagicLoginLive do
       </.simple_form>
     </div>
 
+    <div :if={@step == :welcome} class="mx-auto max-w-sm">
+      <.header class="text-center">
+        On December 7th 6pm
+        <:subtitle>
+        Tell your fam, tell your boss, tell your wife or the one you are going to wife.
+        Mark this
+          <i class="font-semibold text-brand hover:underline">
+            Saturday Evening
+          </i>
+          in your gcals, on your walls or your son's SJI diary
+
+          <br>
+          <br>
+
+          It's for the bois
+        </:subtitle>
+        </.header>
+    </div>
+
     <div :if={@step == :rsvp} class="mx-auto max-w-sm">
       <%= live_render(@socket, OraWeb.UserRSVPLive, id: "register") %>
     </div>
 
     <div :if={@step == :auth_waiting} class="mx-auto max-w-sm">
       <.header class="text-center">
-        Waiting...
+        Keep this tab open!
         <:subtitle>
-          If you have already RSVP'd for the reunion, you will receive an email with a link to log in.
+          If you have already RSVP'd for the reunion, you will receive an email with a link at <%= @email %> that will log you in.
         </:subtitle>
       </.header>
 
