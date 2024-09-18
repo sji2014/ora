@@ -22,8 +22,13 @@ module.exports = {
         marquee: 'marquee 30s linear infinite',
         gradient: 'gradient-anim 30s ease infinite',
         flicker: 'flicker 3s linear infinite',
+        fade: 'fadeIn 1s ease-in-out'
       },
       keyframes: {
+        fadeIn: {
+					from: { opacity: 0 },
+					to: { opacity: 1 },
+				},
         marquee: {
           '0%': {transform: 'translateY(50vh)'},
           '50%': {transform: 'translateY(-80vh)'},

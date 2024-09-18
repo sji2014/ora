@@ -23,7 +23,7 @@ defmodule OraWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <.modal :if={@rsvp} id="paynow" show={@rsvp} on_cancel={JS.patch("/")} >
-    <%= live_render(@socket, OraWeb.UserMagicLoginLive, id: "magiclink") %>
+    <%= live_render(@socket, OraWeb.UserMagicLoginLive, id: "magic-" <> to_string(@live_action), session: %{"step" => @live_action}) %>
     </.modal>
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
     <div class="flex flex-col justify-between  h-screen overflow-hidden">
@@ -51,7 +51,7 @@ defmodule OraWeb.HomeLive do
     <.Time id="timeline" timelineHeight="200" socket={@socket} />
     </div>
     <div class="absolute bottom-0 w-full ">
-  <nav id="year" class="flex justify-between p-2 bg-transparent border">
+    <nav id="year" class="flex justify-between p-2 bg-transparent border">
     <a :for={y <- 2011..2014} class={[y==@time.year && "text-sji text-sm" || "text-gray-400 hover:text-brand text-xs", "nav-item relative flex flex-col items-center justify-center  hover:animate-flicker transition duration-300"]}>
         <span class="font-semibold cursor-pointer" phx-click="pushYear" phx-value-year={y}><%= y %></span>
     </a>
@@ -70,7 +70,7 @@ defmodule OraWeb.HomeLive do
     {:ok, assign(socket, time: %{month: nil, order: nil,  year: nil}, month: nil, photos: gen_map())}
   end
 
-  def handle_params(params, _uri, socket) do
+  def handle_params(_params, _uri, socket) do
     {:noreply, action_handler(socket)}
   end
 
@@ -98,12 +98,12 @@ defmodule OraWeb.HomeLive do
     {:noreply, assign(socket, messages: socket.assigns.messages ++ [payload])}
   end
 
-  defp action_handler(%{assigns: %{live_action: :rsvp}} = socket) do
+  defp action_handler(%{assigns: %{live_action: action}} = socket) when action in [:rsvp, :login] do
     socket
     |> assign(:rsvp, true)
   end
 
-  defp action_handler(%{assigns: %{live_action: act}} = socket) do
+  defp action_handler(%{assigns: %{live_action: _act}} = socket) do
     socket
     |> assign(:rsvp, false)
   end

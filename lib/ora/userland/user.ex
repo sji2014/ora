@@ -2,6 +2,8 @@ defmodule Ora.Userland.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Ora.Userland.UserProfile
+
   @primary_key {:id, Ecto.UUID, autogenerate: true}
   schema "users" do
     field :email, :string
@@ -10,6 +12,7 @@ defmodule Ora.Userland.User do
     field :current_password, :string, virtual: true, redact: true
     field :session_id, :string, virtual: true
     field :confirmed_at, :utc_datetime
+    embeds_one :profile, UserProfile, on_replace: :update
 
     timestamps(type: :utc_datetime)
   end
@@ -37,6 +40,13 @@ defmodule Ora.Userland.User do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
+  def rsvp_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email])
+    |> cast_embed(:profile)
+    |> validate_email(opts)
+  end
+
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])

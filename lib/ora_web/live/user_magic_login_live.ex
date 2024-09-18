@@ -5,29 +5,38 @@ defmodule OraWeb.UserMagicLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div :if={@step == :auth_ready} class="mx-auto max-w-sm">
-      <.header class="text-center">
-        RSVP for the Reunion
+
+    <div :if={@step == :login} class="mx-auto max-w-sm">
+    <.header class="text-center">
+        Log in
         <:subtitle>
-          Enter your email to receive a magic log-in link.
+          Never RSVP yet?
+          <.link patch={~p"/register"} class="font-semibold text-brand hover:underline">
+            RSVP here
+          </.link>
+          first
         </:subtitle>
-      </.header>
+        </.header>
 
       <.simple_form for={@user_form} id="magic_form" phx-submit="save">
         <.input field={@user_form[:email]} type="email" label="Email" required />
         <:actions>
-          <.button phx-disable-with="Submitting..." class="w-full">
-            RSVP 🎉
+          <.button phx-disable-with="Sending..." class="w-full">
+            Receive Login Link &nbsp;  📧
           </.button>
         </:actions>
       </.simple_form>
+    </div>
+
+    <div :if={@step == :rsvp} class="mx-auto max-w-sm">
+      <%= live_render(@socket, OraWeb.UserRSVPLive, id: "register") %>
     </div>
 
     <div :if={@step == :auth_waiting} class="mx-auto max-w-sm">
       <.header class="text-center">
         Waiting...
         <:subtitle>
-          If you already RSVP'd for the reunion, you will receive an email with a link to log in.
+          If you have already RSVP'd for the reunion, you will receive an email with a link to log in.
         </:subtitle>
       </.header>
 
@@ -103,8 +112,15 @@ defmodule OraWeb.UserMagicLoginLive do
     }
   end
 
+  def mount(_params, %{"step" => step}, socket) do
+    {:ok, assign(socket, step: step, token: nil)
+     |> assign(:user_form, to_form(%{}, as: :user))
+     |> assign(:trigger_submit, false)
+    }
+  end
+
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, step: :auth_ready, token: nil)
+    {:ok, assign(socket, step: :login, token: nil)
      |> assign(:user_form, to_form(%{}, as: :user))
      |> assign(:trigger_submit, false)
     }
@@ -113,19 +129,27 @@ defmodule OraWeb.UserMagicLoginLive do
 
   def handle_event("save", %{"user" => %{"email" => user_email}}, socket) do
     case Userland.get_user_by_email(user_email) do
-      %Userland.User{} = u ->
-        token = Userland.deliver_user_magic_log_in(u, &url(~p"/users/log_in/magic/verify/#{&1}"))
-        Phoenix.PubSub.subscribe(Ora.PubSub, "magic:#{token.id}")
+      %Userland.User{} = user ->
+        send(self(), {:deliver_link, user})
       _ ->
-        Process.sleep(Enum.random(500..1500))
+        Process.send_after(self(), {:deliver_link, nil}, Enum.random(500..1500))
     end
 
-    {:noreply, socket
-     |> assign(:step, :auth_waiting)
-     |> assign(:email, user_email)}
+    {:noreply, socket |> assign(:email, user_email)}
+  end
+
+  def handle_info({:deliver_link, %Userland.User{} = user}, socket) do
+    token = Userland.deliver_user_magic_log_in(user, &url(~p"/users/log_in/magic/verify/#{&1}"))
+    Phoenix.PubSub.subscribe(Ora.PubSub, "magic:#{token.id}")
+    {:noreply, socket |> assign(:step, :auth_waiting)}
+  end
+
+  def handle_info({:deliver_link, _}, socket) do
+    {:noreply, socket |> assign(:step, :auth_waiting)}
   end
 
   def handle_info({:magic_log_in, token}, socket) do
+    IO.inspect(token, label: "magic")
     Process.send_after(self(), :trigger_submit, :timer.seconds(1))
     {:noreply, assign(socket, :token, token)}
   end

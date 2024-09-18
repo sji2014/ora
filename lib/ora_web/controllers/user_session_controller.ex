@@ -5,7 +5,7 @@ defmodule OraWeb.UserSessionController do
   alias OraWeb.UserAuth
 
   def create(conn, %{"_action" => "registered"} = params) do
-    create(conn, params, "Account created successfully!")
+    create(conn, params, "Registered successfully!")
   end
 
   def create(conn, %{"_action" => "magic", "user" => %{"token" => token}}) do
@@ -33,8 +33,7 @@ defmodule OraWeb.UserSessionController do
     create(conn, params, "Welcome back!")
   end
 
-  defp create(conn, %{"user" => user_params}, info) do
-    %{"email" => email, "password" => password} = user_params
+  defp create(conn, %{"user" => %{"email" => email, "password" => password} = user_params}, info) do
 
     if user = Userland.get_user_by_email_and_password(email, password) do
       conn
@@ -47,6 +46,13 @@ defmodule OraWeb.UserSessionController do
       |> put_flash(:email, String.slice(email, 0, 160))
       |> redirect(to: ~p"/users/log_in")
     end
+  end
+
+  defp create(conn, _, _info) do
+      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+      conn
+      |> put_flash(:error, "Invalid email or password")
+      |> redirect(to: ~p"/register")
   end
 
   def delete(conn, _params) do

@@ -21,6 +21,7 @@ defmodule OraWeb.Router do
     pipe_through :browser
     live "/", HomeLive, :home
     live "/register", HomeLive, :rsvp
+    live "/login", HomeLive, :login
     live "/talk", TalkLive, :home
     live "/draw", DrawLive, :home
     # get "/", PageController, :home

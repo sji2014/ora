@@ -12,22 +12,14 @@
     </script>
   </head>
   <div class="relative h-screen overflow-hidden">
-  <header id="topbar" class="fixed sticky bg-off-white backdrop-blur top-0 px-4 sm:px-6 lg:px-8 z-50">
+  <header id="topbar" class="fixed sticky bg-off-white backdrop-blur top-0 px-4 sm:px-6 lg:px-8 z-40">
     <ul class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
         <a href="/" class="">
             <img src={~p"/images/signum.svg"} width="30" class="mix-blend-normal"/>
         </a>
         <%= if @current_user do %>
             <li class="text-[0.8125rem] leading-6 text-zinc-900">
-                <%= @current_user.email %>
-            </li>
-            <li>
-                <.link
-                    href={~p"/users/settings"}
-                    class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-                >
-                    Settings
-                </.link>
+                <%= @current_user.profile.full_name %>
             </li>
             <li>
                 <.link
@@ -40,6 +32,14 @@
             </li>
         <% else %>
             <li>
+
+              <.link
+                    patch={~p"/login"}
+                    class="text-sm leading-6 px-4 text-zinc-900 font-semibold hover:text-brand"
+                >
+                    Login
+                </.link>
+
                 <.link
                     patch={~p"/register"}
                     class="text-sm leading-6 text-zinc-900 font-semibold hover:text-brand"
@@ -50,6 +50,7 @@
         <% end %>
     </ul>
 </header>
+  <.flash_group flash={@flash} />
   <%= @inner_content %>
 </div>
 </html>

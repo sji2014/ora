@@ -80,6 +80,12 @@ defmodule Ora.Userland do
     |> Repo.insert()
   end
 
+  def rsvp_user(attrs) do
+    %User{}
+    |> User.rsvp_changeset(attrs)
+    |> Repo.insert()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.
 
@@ -91,6 +97,10 @@ defmodule Ora.Userland do
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+  end
+
+  def change_user_rsvp(%User{} = user, attrs \\ %{}) do
+    User.rsvp_changeset(user, attrs, validate_email: false)
   end
 
   ## Settings
