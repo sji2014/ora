@@ -30,9 +30,9 @@ module.exports = {
 					to: { opacity: 1 },
 				},
         marquee: {
-          '0%': {transform: 'translateY(50vh)'},
-          '50%': {transform: 'translateY(-80vh)'},
-          '100%': {transform: 'translateY(88vh)'},
+          '0%': {transform: 'translateY(70vh)'},
+          '100%': {transform: 'translateY(-140%)'}
+        ,
         },
         'gradient-anim': {
           '0%': { backgroundPosition: '0% 0%' },

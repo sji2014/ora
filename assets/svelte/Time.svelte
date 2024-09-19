@@ -38,11 +38,19 @@
     easing: cubicOut
   });
 
+  const debounce = (func, delay) => {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+};
+  
   onMount(() => {
     const resizeObserver = new ResizeObserver(centerTimeline);
     resizeObserver.observe(timelineElement);
     live.handleEvent("pullMonth", (time) => {
-      console.log(time.index)
       handleMonth(time.index)
       
       });
@@ -60,21 +68,33 @@
   
 
   async function handleMonth(monthId) {
-    console.log(monthId)
-  if (!isDragging && !isTransitioning) {
-    isTransitioning = true;
-    if (zoomedMonthId === monthId) {
-      await zoomOut();
-    } else {
-      live.pushEvent("pushMonth", {month: monthId+1}, () => {})
-      await zoomIn(monthId);
+    if (!isDragging && !isTransitioning) {
+      isTransitioning = true;
+      if (zoomedMonthId !== monthId) {
+        zoomedMonthId = monthId
+        live.pushEvent("pushMonth", {month: monthId+1}, () => {})
+        await zoomIn(monthId);
+      }
+      isTransitioning = false;
     }
-    isTransitioning = false;
   }
-}
 
+  async function handleMonthTouch(monthId) {
+    if (!isDragging && !isTransitioning) {
+      isTransitioning = true;
+      if (zoomedMonthId !== monthId) {
+        zoomedMonthId = monthId
+        live.pushEvent("pushMonth", {month: monthId+1}, () => {})
+        await zoomIn(monthId);
+      } else {
+        live.pushEvent("pushMonth", {month: null}, () => {})
+        await zoomOut();
+      }
+      isTransitioning = false;
+    }
+  }
+  
 async function zoomIn(monthId) {
-  zoomedMonthId = monthId;
   await tick();
   zoomScale.set(2, {
     duration: 300,
@@ -148,7 +168,7 @@ async function zoomOut() {
     on:mousemove={drag}
     on:mouseup={stopDragging}
     on:mouseleave={stopDragging}
-    class="flex-none overflow-x-auto cursor-grab active:cursor-grabbing select-none no-scrollbar"
+    class="relative bottom-0 flex-none overflow-x-auto cursor-grab active:cursor-grabbing select-none no-scrollbar"
     bind:clientWidth={timelineWidth}
     bind:clientHeight={timelineHeight}
   >
@@ -160,17 +180,6 @@ async function zoomOut() {
             
             class="cursor-pointer"
           >
-
-
-            <rect
-              x={(index) * MONTH_WIDTH}
-              y="-100"
-              width={MONTH_WIDTH}
-              height="200"
-              fill="transparent"
-              on:mouseenter={() => handleMonth(index)}
-              on:touchstart={() => handleMonth(index)}
-            />
 
             <rect
               x={index * MONTH_WIDTH + MONTH_WIDTH/4}
@@ -184,6 +193,19 @@ async function zoomOut() {
               stroke={zoomedMonthId === index  ? "#006837" : "transparent"}
               stroke-width="1"
             />
+
+            // splash for svg is rendered on top if defined after prev rect
+
+            <rect
+              x={(index) * MONTH_WIDTH}
+              y="-100"
+              width={MONTH_WIDTH}
+              height="200"
+              fill="transparent"
+              on:mouseenter={() => handleMonth(index)}
+              on:touchstart={() => handleMonthTouch(index)}
+            />
+
           </g>
         {/each}
       </g>

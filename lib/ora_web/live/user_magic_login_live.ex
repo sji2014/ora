@@ -10,11 +10,11 @@ defmodule OraWeb.UserMagicLoginLive do
     <.header class="text-center">
         Log in
         <:subtitle>
-          Never RSVP yet?
+          Haven't got your ticket yet?
           <.link patch={~p"/invite"} class="font-semibold text-brand hover:underline">
-            RSVP here
+           Grab your ticket
           </.link>
-          first
+          here
         </:subtitle>
         </.header>
 
@@ -79,7 +79,7 @@ defmodule OraWeb.UserMagicLoginLive do
       </.form>
     </div>
 
-    <div :if={@step == :verify_success} class="mx-auto max-w-sm">
+    <div :if={@step == :verify_success} class="py-48 mx-auto max-w-sm">
       <.header class="text-center">
         Welcome back, <%= @email %>!
         <:subtitle>
@@ -92,7 +92,7 @@ defmodule OraWeb.UserMagicLoginLive do
       </div>
     </div>
 
-    <div :if={@step == :verify_error} class="mx-auto max-w-sm">
+    <div :if={@step == :verify_error} class="py-48 mx-auto max-w-sm">
       <.header class="text-center">
         Oops
         <:subtitle>

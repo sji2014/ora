@@ -27,13 +27,14 @@ defmodule OraWeb.HomeLive do
     </.modal>
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
     <div class="flex flex-col justify-between  h-screen overflow-hidden">
-    <svg :if={!@month} viewBox="0 0 100 100" class="w-1/2 h-1/2 max-w-md mx-auto duration-5000 animate-pulse ease-in-out  hover:animate-none"  aria-hidden="true">
+    <div :if={!@month} class="animate-fade w-1/2 h-1/2 max-w-md mx-auto" >
+    <svg  viewBox="0 0 100 100" class="duration-5000 animate-pulse ease-in-out  hover:animate-none"  aria-hidden="true">
     <.link patch={~p"/welcome"} class="text-sm leading-6 text-zinc-900 font-semibold hover:text-brand">
     <image xlink:href="/images/logo.svg" width="100" height="120"/>
     </.link>
     </svg>
-    <.Countdown id="countdown" :if={!@month} dateTime={DateTime.new!(~D[2024-12-07], ~T[10:00:00]) |> DateTime.to_unix()} />
-
+    <.Countdown class="pt-8" id="countdown" dateTime={DateTime.new!(~D[2024-12-07], ~T[10:00:00]) |> DateTime.to_unix()} />
+    </div>
     <main :if={@month} class="flex text-white text-center flex-col mb-auto h-2/3">
       <div  class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
       <div class="animate-marquee hover:[animation-play-state:paused]">
@@ -46,11 +47,11 @@ defmodule OraWeb.HomeLive do
       <%= @time.month %>
       </span>
 
-    <.Time id="timeline" timelineHeight="200" socket={@socket} />
+    <.Time id="timeline" timelineHeight="200" socket={@socket}/>
     </div>
     <div class="absolute bottom-0 w-full ">
-    <nav id="year" class="flex justify-between p-2 bg-transparent border">
-    <a :for={y <- 2011..2014} class={[y==@time.year && "text-sji text-sm" || "text-gray-400 hover:text-brand text-xs", "nav-item relative flex flex-col items-center justify-center  hover:animate-flicker transition duration-300"]}>
+    <nav id="year" class="flex justify-between p-2 lg:px-20 bg-transparent border">
+    <a :for={y <- 2011..2014} class={[y==@time.year && "text-sji drop-shadow-md" || "text-gray-400 hover:text-brand text-xs", "nav-item relative flex flex-col items-center justify-center  hover:animate-flicker transition duration-300"]}>
         <span class="font-semibold cursor-pointer" phx-click="pushYear" phx-value-year={y}><%= y %></span>
     </a>
     </nav>
@@ -60,7 +61,12 @@ defmodule OraWeb.HomeLive do
     """
   end
 
-  # auto scroll when hover
+  # take me back button below timer to show 2011-2014
+  # info brochure (template needed) -> copy for the brochure RSVP button
+  # Pay for ticket at point of RSVP
+  # fanout emails for QR Code of ticket with payment processing (template needed )
+
+  # Haven't got your ticket yet? Buy your <b>  ticket here </b>
 
   def mount(_params, _session, socket) do
     OraWeb.Endpoint.subscribe(@topic)
@@ -128,5 +134,9 @@ defmodule OraWeb.HomeLive do
     %{month: Enum.at(months, month - 1),
       order: month,
       year: Enum.at([2011, 2012, 2013, 2014], floor((index-1)/12))}
+  end
+
+  def convert(_) do
+    %{month: nil, order: nil,  year: nil}
   end
 end

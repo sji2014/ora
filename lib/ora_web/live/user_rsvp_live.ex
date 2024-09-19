@@ -6,7 +6,8 @@ defmodule OraWeb.UserRSVPLive do
 
   def render(assigns) do
     ~H"""
-    <div :if={@step == :rsvp} class="mx-auto max-w-sm">
+    <div :if={@step === :rsvp} class="max-w-sm mx-auto flex justify-center items-center">
+    <div class="flex-none">
      <.header class="text-center text-green-500">
         10 years have passed
         <:subtitle>
@@ -35,16 +36,22 @@ defmodule OraWeb.UserRSVPLive do
         </.inputs_for>
         <.input field={@form[:email]} type="email" label="Email" required />
 
+        <%= Phoenix.HTML.raw(@payment) %>
         <:actions>
           <.button phx-disable-with="RSVPing..." class="w-full hover:bg-sji ">RSVP 🥳</.button>
         </:actions>
       </.simple_form>
+      </div>
     </div>
 
-    <div :if={@step != :rsvp} class="mx-auto max-w-sm">
-     <.header class="text-center text-green-500">
+    <div :if={@step !== :rsvp} class="max-w-sm mx-auto flex justify-center items-center">
+    <div class="flex-none" >
+    <.header class="flex-none text-center text-green-500">
         10 years have passed
         <:subtitle>
+
+
+
         <span>  Since we stood tall in the <i class="font-semibold text-sji"> Founder's Hall </i>&hairsp;  upon Graduation </span>
         <br>
          We are once again stirred to answer St Joseph's Call
@@ -52,15 +59,25 @@ defmodule OraWeb.UserRSVPLive do
         <span> This time to return <b class="text-sji font-semibold"> Back Home </b> </span>
         </:subtitle>
       </.header>
+
+    </div>
+
     </div>
     """
   end
 
   def mount(_params, _session, socket) do
     changeset = Userland.change_user_rsvp(%User{})
+    {:ok, qr} = Ora.PayNow.gen_qr(%{
+          uen: "+6592343815",
+          editable: 0,
+          expiry: 1,
+          amount: 0.88,
+          ref_number: " If you can fill the unforgiving minute, With sixty seconds’ worth of distance run",
+          company: "ACME Pte Ltd"})
     socket =
       socket
-      |> assign(step: :rsvp, check_errors: false)
+      |> assign(step: :rsvp, payment: qr, check_errors: false)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
