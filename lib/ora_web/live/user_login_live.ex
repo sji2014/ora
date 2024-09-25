@@ -1,6 +1,8 @@
 defmodule OraWeb.UserLoginLive do
   use OraWeb, :live_view
 
+  # import OraWeb.FilepondComponent, only: [filepond: 1]
+
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -14,6 +16,8 @@ defmodule OraWeb.UserLoginLive do
           for an account now.
         </:subtitle>
       </.header>
+      <%!-- <h1>Upload your image here nigga</h1> --%>
+      <%!-- <.filepond /> --%>
 
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
         <.input field={@form[:email]} type="email" label="Email" required />
@@ -31,14 +35,12 @@ defmodule OraWeb.UserLoginLive do
           </.button>
         </:actions>
         <:actions>
-        <span class="text-2xl" > OR </span>
+          <span class="text-2xl"> OR </span>
         </:actions>
         <:actions>
-
           <.link href={~p"/users/log_in/magic"} class="text-sm font-semibold">
             Log in with magic link straight to email
           </.link>
-
         </:actions>
       </.simple_form>
     </div>

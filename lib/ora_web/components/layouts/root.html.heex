@@ -12,45 +12,50 @@
     </script>
   </head>
   <div class="relative h-screen overflow-hidden">
-  <header id="topbar" class="fixed sticky bg-off-white backdrop-blur top-0 px-4 sm:px-6 lg:px-8 z-40">
-    <ul class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
+    <header
+      id="topbar"
+      class="fixed sticky bg-off-white backdrop-blur top-0 px-4 sm:px-6 lg:px-8 z-40"
+    >
+      <ul class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
         <a href="/" class="">
-            <img src={~p"/images/signum.svg"} width="30" class="mix-blend-normal"/>
+          <img src={~p"/images/signum.svg"} width="30" class="mix-blend-normal" />
         </a>
         <%= if @current_user do %>
-            <li class="text-[0.8125rem] leading-6 text-zinc-900">
-                <%= @current_user.profile.full_name %>
-            </li>
-            <li>
-                <.link
-                    href={~p"/users/log_out"}
-                    method="delete"
-                    class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-                >
-                    Log out
-                </.link>
-            </li>
+          <li class="text-[0.8125rem] leading-6 text-zinc-900">
+            <%= @current_user.profile.full_name %>
+          </li>
+          <li>
+            <.link
+              href={~p"/users/log_out"}
+              method="delete"
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              Log out
+            </.link>
+          </li>
         <% else %>
-            <li>
+          <li>
+            <.link
+              patch={~p"/login"}
+              class="text-sm leading-6 px-2 text-zinc-900 font-semibold hover:text-brand"
+            >
+              My Ticket
+            </.link>
 
-              <.link
-                    patch={~p"/login"}
-                    class="text-sm leading-6 px-2 text-zinc-900 font-semibold hover:text-brand"
-                >
-                    My Ticket
-                </.link>
-
-                <.link
-                    patch={~p"/invite"}
-                    class="text-sm leading-6 px-2 text-zinc-900 font-semibold hover:text-brand"
-                >
-                    RSVP
-                </.link>
-            </li>
+            <.link
+              patch={~p"/invite"}
+              class="text-sm leading-6 px-2 text-zinc-900 font-semibold hover:text-brand"
+            >
+              RSVP
+            </.link>
+          </li>
         <% end %>
-    </ul>
-</header>
-  <.flash_group flash={@flash} />
-  <%= @inner_content %>
-</div>
+      </ul>
+    </header>
+    <.flash_group flash={@flash} />
+    <%= @inner_content %>
+  </div>
+  <div>
+    big booty bitches
+  </div>
 </html>

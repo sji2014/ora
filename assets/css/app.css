@@ -2,19 +2,21 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* for filepond */
+@import "filepond/dist/filepond.css";
+@import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 @layer utilities {
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-     /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-    }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
 
 /* /\* This file is for your main application CSS *\/ */
 /* @font-face { */

@@ -1,27 +1,26 @@
 defmodule OraWeb.UserMagicLoginLive do
   use OraWeb, :live_view
+  use LiveSvelte.Components
 
   alias Ora.Userland
-  import OraWeb.SVG, [only: [ticket: 1]]
+  import OraWeb.SVG, only: [ticket: 1]
+  import OraWeb.FilepondComponent, only: [filepond: 1]
 
   def render(assigns) do
     ~H"""
-
     <div :if={@step == :login} class="mx-auto max-w-2xl">
-    <.header class="text-center flex-none">
+      <.header class="text-center flex-none">
         Log in
         <:subtitle>
           Haven't got your ticket yet?
           <.link patch={~p"/invite"} class="font-semibold text-brand hover:underline">
-           Grab your ticket
+            Grab your ticket
           </.link>
           here
         </:subtitle>
-        </.header>
+      </.header>
 
-      <.ticket class="mx-auto"
-      width="100%"
-   height="42%"/>
+      <.ticket class="mx-auto" width="100%" height="42%" />
 
       <.simple_form for={@user_form} id="magic_form" phx-submit="save">
         <.input field={@user_form[:email]} type="email" label="Email" required />
@@ -37,19 +36,19 @@ defmodule OraWeb.UserMagicLoginLive do
       <.header class="text-center">
         On December 7th 6pm
         <:subtitle>
-        Tell your fam, tell your boss, tell your wife or the one you are going to wife.
-        Mark this
+          Tell your fam, tell your boss, tell your wife or the one you are going to wife.
+          Mark this
           <i class="font-semibold text-brand hover:underline">
             Saturday Evening
           </i>
-          in your gcals, on your walls or your son's SJI diary
-
-          <br>
-          <br>
-
-          It's for the bois
+          in your gcals, on your walls or your son's SJI diary <br />
+          <br /> It's for the bois
         </:subtitle>
-        </.header>
+      </.header>
+      <%!-- <h1>Upload your image here nigga</h1> --%>
+
+      <.Filepond />
+      <%!-- <p>wasd</p> --%>
     </div>
 
     <div :if={@step == :rsvp} class="">
@@ -124,37 +123,38 @@ defmodule OraWeb.UserMagicLoginLive do
   end
 
   def mount(%{"success" => "true"} = params, _session, socket) do
-    {:ok, assign(socket, step: :verify_success, email: params["email"])
-    |> assign(:user_form, to_form(%{}, as: :user))
+    {:ok,
+     assign(socket, step: :verify_success, email: params["email"])
+     |> assign(:user_form, to_form(%{}, as: :user))
      |> assign(:trigger_submit, false)}
   end
 
   def mount(%{"success" => "false"}, _session, socket) do
-    {:ok, assign(socket, step: :verify_error)
-    |> assign(:user_form, to_form(%{}, as: :user))
-     |> assign(:trigger_submit, false)
-    }
+    {:ok,
+     assign(socket, step: :verify_error)
+     |> assign(:user_form, to_form(%{}, as: :user))
+     |> assign(:trigger_submit, false)}
   end
 
   def mount(_params, %{"step" => step}, socket) do
-    {:ok, assign(socket, step: step, token: nil)
+    {:ok,
+     assign(socket, step: step, token: nil)
      |> assign(:user_form, to_form(%{}, as: :user))
-     |> assign(:trigger_submit, false)
-    }
+     |> assign(:trigger_submit, false)}
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, step: :login, token: nil)
+    {:ok,
+     assign(socket, step: :login, token: nil)
      |> assign(:user_form, to_form(%{}, as: :user))
-     |> assign(:trigger_submit, false)
-    }
+     |> assign(:trigger_submit, false)}
   end
-
 
   def handle_event("save", %{"user" => %{"email" => user_email}}, socket) do
     case Userland.get_user_by_email(user_email) do
       %Userland.User{} = user ->
         send(self(), {:deliver_link, user})
+
       _ ->
         Process.send_after(self(), {:deliver_link, user_email}, Enum.random(500..1500))
     end
