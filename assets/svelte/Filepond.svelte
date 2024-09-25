@@ -43,7 +43,3 @@
 </div>
 
 <!-- useless lines, just imported directly via assets/css folder  -->
-<style global>
-  @import "filepond/dist/filepond.css";
-  @import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-</style>

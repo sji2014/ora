@@ -125,5 +125,9 @@ if config_env() == :prod do
   config :swoosh,
   api_client: Swoosh.ApiClient.Finch,
   finch_name: Ora.Finch
-  
+
+  else
+
+    Ora.Parser.Env.load_file(".env")
+
 end

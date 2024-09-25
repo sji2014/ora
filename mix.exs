@@ -64,7 +64,10 @@ defmodule Ora.MixProject do
       {:bandit, "~> 1.5"},
       {:qr_code, "~> 3.0.0"},
       {:uuidv7, "~> 1.0"},
-      {:fsmx, "~> 0.5"}
+      {:fsmx, "~> 0.5"},
+      #s3 client related
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_s3, "~> 2.0"}
     ]
   end
 
