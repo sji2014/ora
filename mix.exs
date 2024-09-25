@@ -62,7 +62,9 @@ defmodule Ora.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:qr_code, "~> 3.0.0"}
+      {:qr_code, "~> 3.0.0"},
+      {:uuidv7, "~> 1.0"},
+      {:fsmx, "~> 0.5"}
     ]
   end
 

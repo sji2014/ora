@@ -61,12 +61,16 @@ defmodule OraWeb.HomeLive do
     """
   end
 
+  # BUY YOUR TICKET ACTION
+  # UPLOAD MEMORY ACTION
+  # NO EXPLICIT LOGIN
+  # Contact Us : Email sji, Telegram suhas
   # take me back button below timer to show 2011-2014
-  # info brochure (template needed) -> copy for the brochure RSVP button
   # Pay for ticket at point of RSVP
+  #
+  # reminder email
   # fanout emails for QR Code of ticket with payment processing (template needed )
 
-  # Haven't got your ticket yet? Buy your <b>  ticket here </b>
 
   def mount(_params, _session, socket) do
     OraWeb.Endpoint.subscribe(@topic)

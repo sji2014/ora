@@ -2,12 +2,13 @@ defmodule OraWeb.UserMagicLoginLive do
   use OraWeb, :live_view
 
   alias Ora.Userland
+  import OraWeb.SVG, [only: [ticket: 1]]
 
   def render(assigns) do
     ~H"""
 
-    <div :if={@step == :login} class="mx-auto max-w-sm">
-    <.header class="text-center">
+    <div :if={@step == :login} class="mx-auto max-w-2xl">
+    <.header class="text-center flex-none">
         Log in
         <:subtitle>
           Haven't got your ticket yet?
@@ -17,6 +18,10 @@ defmodule OraWeb.UserMagicLoginLive do
           here
         </:subtitle>
         </.header>
+
+      <.ticket class="mx-auto"
+      width="100%"
+   height="42%"/>
 
       <.simple_form for={@user_form} id="magic_form" phx-submit="save">
         <.input field={@user_form[:email]} type="email" label="Email" required />
@@ -47,7 +52,7 @@ defmodule OraWeb.UserMagicLoginLive do
         </.header>
     </div>
 
-    <div :if={@step == :rsvp} class="mx-auto max-w-sm">
+    <div :if={@step == :rsvp} class="">
       <%= live_render(@socket, OraWeb.UserRSVPLive, id: "register") %>
     </div>
 
