@@ -51,23 +51,6 @@ defmodule OraWeb.HomeLive do
       ) %>
     </.modal>
 
-
-    <.modal
-      id="mmrs"
-      patch="/"
-      phx-mounted={@live_action == :upload && show_modal("mmrs")}
-    >
-      <:title>Add Music</:title>
-      <.live_component
-        id="upload-form"
-        module={OraWeb.MemoryLive.FormComponent}
-        on_complete={hide_modal("mmrs")}
-      />
-      <:confirm type="submit" form="song-form">Save</:confirm>
-      <:cancel>Cancel</:cancel>
-    </.modal>
-
-
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
       <div class="flex flex-col justify-between  h-screen overflow-hidden">
         <div :if={!@month} class="animate-fade w-1/2 h-1/2 max-w-md mx-auto">
@@ -178,7 +161,6 @@ defmodule OraWeb.HomeLive do
   # fanout emails for QR Code of ticket with payment processing (template needed )
 
   def mount(_params, _session, socket) do
-    OraWeb.Endpoint.subscribe(@topic)
 
     {:ok,
      assign(socket, time: %{month: nil, order: nil, year: nil}, month: nil, photos: gen_map(), rsvp: false, memory: false)
