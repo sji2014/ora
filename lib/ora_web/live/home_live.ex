@@ -17,30 +17,6 @@ defmodule OraWeb.HomeLive do
     "https://res.cloudinary.com/dyvotpxft/image/upload/v1723484270/Screenshot_23_8_nbzwdm.png"
   ]
 
-    #   <.modal
-    #   id="upload"
-    #   on_cancel={JS.patch("/")}
-    #   phx-mounted={@live_action == :new && show_modal("upload")}
-    # >
-    #  <.header class="text-center text-green-500">
-    #     Share Memories of <b class="text-sji font-semibold"> Home </b>
-    #     <:subtitle>
-    #     <span> For those photos we captured in glorious 480p </span>
-    #     <br>
-    #      hiding in our old hardrives, Samsung Galaxy S3s and iPhone4s
-    #     <br>
-    #     </:subtitle>
-    #   </.header>
-
-    #   <.live_component
-    #     id="upload-form"
-    #     module={UploadFormComponent}
-    #     current_user={@current_user}
-    #     on_complete={hide_modal("upload")}
-    #   />
-    #   <:confirm type="submit" form="song-form">Save</:confirm>
-    #   <:cancel>Cancel</:cancel>
-    # </.modal>
 
   def render(assigns) do
     ~H"""
@@ -50,6 +26,59 @@ defmodule OraWeb.HomeLive do
         session: %{"step" => @live_action}
       ) %>
     </.modal>
+
+    <.modal :if={@live_action == :upload} id="upload" on_cancel={JS.patch("/")} phx-mounted={@live_action == :upload && show_modal("upload")}>
+     <.header class="text-center text-green-500">
+        Share Memories of <b class="text-sji font-semibold"> Home </b>
+        <:subtitle>
+        <span> For those photos we captured in glorious 480 </span>
+        <br>
+         hiding in our old hardrives, Samsung Galaxy S3s and iPhone4s
+        <br>
+        </:subtitle>
+      </.header>
+
+    <section phx-drop-target={@uploads.mmrs.ref}>
+
+    <form id="upload-form" phx-submit="save" phx-change="validate">
+    <.live_file_input upload={@uploads.mmrs} />
+    <button type="submit">Upload</button>
+    </form>
+
+    <%!-- render each mmrs entry --%>
+    <%= for entry <- @uploads.mmrs.entries do %>
+    <article class="upload-entry">
+
+    <figure>
+    <.live_img_preview entry={entry} />
+    <figcaption><%= entry.client_name %></figcaption>
+    </figure>
+
+    <%!-- entry.progress will update automatically for in-flight entries --%>
+    <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+
+    <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
+    <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+
+    <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+    <%= for err <- upload_errors(@uploads.mmrs, entry) do %>
+    <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+
+    </article>
+    <% end %>
+
+    <%!-- Phoenix.Component.upload_errors/1 returns a list of error atoms --%>
+    <%= for err <- upload_errors(@uploads.mmrs) do %>
+    <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+
+    </section>
+
+      <:confirm type="submit" form="song-form">Save</:confirm>
+      <:cancel>Cancel</:cancel>
+    </.modal>
+
 
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
       <div class="flex flex-col justify-between  h-screen overflow-hidden">
@@ -88,43 +117,6 @@ defmodule OraWeb.HomeLive do
         <span :if={@time} class="text-xl text-center text-brand pt-6 ">
           <%= @time.month %>
         </span>
-
-    <section phx-drop-target={@uploads.mmrs.ref}>
-
-    <form id="upload-form" phx-submit="save" phx-change="validate">
-    <.live_file_input upload={@uploads.mmrs} />
-    <button type="submit">Upload</button>
-    </form>
-
-    <%!-- render each mmrs entry --%>
-    <%= for entry <- @uploads.mmrs.entries do %>
-    <article class="upload-entry">
-
-    <figure>
-    <.live_img_preview entry={entry} />
-    <figcaption><%= entry.client_name %></figcaption>
-    </figure>
-
-    <%!-- entry.progress will update automatically for in-flight entries --%>
-    <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
-
-    <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
-    <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
-
-    <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
-    <%= for err <- upload_errors(@uploads.mmrs, entry) do %>
-    <p class="alert alert-danger"><%= error_to_string(err) %></p>
-    <% end %>
-
-    </article>
-    <% end %>
-
-    <%!-- Phoenix.Component.upload_errors/1 returns a list of error atoms --%>
-    <%= for err <- upload_errors(@uploads.mmrs) do %>
-    <p class="alert alert-danger"><%= error_to_string(err) %></p>
-    <% end %>
-
-    </section>
 
         <.Time id="timeline" timelineHeight="200" socket={@socket} />
       </div>
