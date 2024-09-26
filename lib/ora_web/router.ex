@@ -55,6 +55,7 @@ defmodule OraWeb.Router do
       on_mount: [{OraWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/login", HomeLive, :login
       live "/invite", HomeLive, :rsvp
+      live "/mmrs", HomeLive, :upload
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new

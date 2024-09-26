@@ -39,7 +39,6 @@
     allowMultiple={true}
     oninit={handleInit}
     onaddfile={handleAddFile}
+    credits={false}
   />
 </div>
-
-<!-- useless lines, just imported directly via assets/css folder  -->

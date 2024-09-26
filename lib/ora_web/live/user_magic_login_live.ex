@@ -4,11 +4,10 @@ defmodule OraWeb.UserMagicLoginLive do
 
   alias Ora.Userland
   import OraWeb.SVG, only: [ticket: 1]
-  import OraWeb.FilepondComponent, only: [filepond: 1]
 
   def render(assigns) do
     ~H"""
-    <div :if={@step == :login} class="mx-auto max-w-2xl">
+    <div :if={@step == :login}  animate-fade duration-1000 class="mx-auto max-w-2xl">
       <.header class="text-center flex-none">
         Log in
         <:subtitle>
@@ -30,25 +29,6 @@ defmodule OraWeb.UserMagicLoginLive do
           </.button>
         </:actions>
       </.simple_form>
-    </div>
-
-    <div :if={@step == :welcome} class="mx-auto max-w-sm">
-      <.header class="text-center">
-        On December 7th 6pm
-        <:subtitle>
-          Tell your fam, tell your boss, tell your wife or the one you are going to wife.
-          Mark this
-          <i class="font-semibold text-brand hover:underline">
-            Saturday Evening
-          </i>
-          in your gcals, on your walls or your son's SJI diary <br />
-          <br /> It's for the bois
-        </:subtitle>
-      </.header>
-      <%!-- <h1>Upload your image here nigga</h1> --%>
-
-      <.Filepond />
-      <%!-- <p>wasd</p> --%>
     </div>
 
     <div :if={@step == :rsvp} class="">

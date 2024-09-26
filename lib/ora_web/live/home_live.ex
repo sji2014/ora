@@ -2,9 +2,6 @@ defmodule OraWeb.HomeLive do
   use OraWeb, :live_view
   use LiveSvelte.Components
 
-  @topic "public"
-  @event_new_message "new_message"
-
   @img [
     "https://res.cloudinary.com/dyvotpxft/image/upload/v1723483677/6_cyknpp.png",
     "https://res.cloudinary.com/dyvotpxft/image/upload/v1723483676/3_mxnxwe.png",
@@ -20,14 +17,57 @@ defmodule OraWeb.HomeLive do
     "https://res.cloudinary.com/dyvotpxft/image/upload/v1723484270/Screenshot_23_8_nbzwdm.png"
   ]
 
+    #   <.modal
+    #   id="upload"
+    #   on_cancel={JS.patch("/")}
+    #   phx-mounted={@live_action == :new && show_modal("upload")}
+    # >
+    #  <.header class="text-center text-green-500">
+    #     Share Memories of <b class="text-sji font-semibold"> Home </b>
+    #     <:subtitle>
+    #     <span> For those photos we captured in glorious 480p </span>
+    #     <br>
+    #      hiding in our old hardrives, Samsung Galaxy S3s and iPhone4s
+    #     <br>
+    #     </:subtitle>
+    #   </.header>
+
+    #   <.live_component
+    #     id="upload-form"
+    #     module={UploadFormComponent}
+    #     current_user={@current_user}
+    #     on_complete={hide_modal("upload")}
+    #   />
+    #   <:confirm type="submit" form="song-form">Save</:confirm>
+    #   <:cancel>Cancel</:cancel>
+    # </.modal>
+
   def render(assigns) do
     ~H"""
-    <.modal :if={@rsvp} id="paynow" show={@rsvp} on_cancel={JS.patch("/")}>
+    <.modal :if={@rsvp} id="rsvp" show={@rsvp} patch="/" >
       <%= live_render(@socket, OraWeb.UserMagicLoginLive,
         id: "magic-" <> to_string(@live_action),
         session: %{"step" => @live_action}
       ) %>
     </.modal>
+
+
+    <.modal
+      id="mmrs"
+      patch="/"
+      phx-mounted={@live_action == :upload && show_modal("mmrs")}
+    >
+      <:title>Add Music</:title>
+      <.live_component
+        id="upload-form"
+        module={OraWeb.MemoryLive.FormComponent}
+        on_complete={hide_modal("mmrs")}
+      />
+      <:confirm type="submit" form="song-form">Save</:confirm>
+      <:cancel>Cancel</:cancel>
+    </.modal>
+
+
     <body class="bg-[linear-gradient(90deg,_#faf9f6,_#c2fff1)] bg-[length:400%_400%] animate-gradient">
       <div class="flex flex-col justify-between  h-screen overflow-hidden">
         <div :if={!@month} class="animate-fade w-1/2 h-1/2 max-w-md mx-auto">
@@ -37,7 +77,7 @@ defmodule OraWeb.HomeLive do
             aria-hidden="true"
           >
             <.link
-              patch={~p"/welcome"}
+              patch={~p"/mmrs"}
               class="text-sm leading-6 text-zinc-900 font-semibold hover:text-brand"
             >
               <image xlink:href="/images/logo.svg" width="100" height="120" />
@@ -48,7 +88,6 @@ defmodule OraWeb.HomeLive do
             id="countdown"
             dateTime={DateTime.new!(~D[2024-12-07], ~T[10:00:00]) |> DateTime.to_unix()}
           />
-          <.Filepond />
         </div>
         <main :if={@month} class="flex text-white text-center flex-col mb-auto h-2/3">
           <div class="flex items-center flex-col  h-full overflow-y-scroll" style="max-height: 90vh;">
@@ -66,6 +105,43 @@ defmodule OraWeb.HomeLive do
         <span :if={@time} class="text-xl text-center text-brand pt-6 ">
           <%= @time.month %>
         </span>
+
+    <section phx-drop-target={@uploads.mmrs.ref}>
+
+    <form id="upload-form" phx-submit="save" phx-change="validate">
+    <.live_file_input upload={@uploads.mmrs} />
+    <button type="submit">Upload</button>
+    </form>
+
+    <%!-- render each mmrs entry --%>
+    <%= for entry <- @uploads.mmrs.entries do %>
+    <article class="upload-entry">
+
+    <figure>
+    <.live_img_preview entry={entry} />
+    <figcaption><%= entry.client_name %></figcaption>
+    </figure>
+
+    <%!-- entry.progress will update automatically for in-flight entries --%>
+    <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+
+    <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
+    <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+
+    <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+    <%= for err <- upload_errors(@uploads.mmrs, entry) do %>
+    <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+
+    </article>
+    <% end %>
+
+    <%!-- Phoenix.Component.upload_errors/1 returns a list of error atoms --%>
+    <%= for err <- upload_errors(@uploads.mmrs) do %>
+    <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+
+    </section>
 
         <.Time id="timeline" timelineHeight="200" socket={@socket} />
       </div>
@@ -86,19 +162,17 @@ defmodule OraWeb.HomeLive do
         </nav>
       </div>
       <div>
-        inshallahalahahlahslalhalha
       </div>
-      <%!-- <.Filepond /> --%>
     </body>
     """
   end
 
-  # BUY YOUR TICKET ACTION
-  # UPLOAD MEMORY ACTION
-  # NO EXPLICIT LOGIN
-  # Contact Us : Email sji, Telegram suhas
-  # take me back button below timer to show 2011-2014
-  # Pay for ticket at point of RSVP
+  # way to upload images get exif store and sort and query db memory model. image jpeg tiff only filter out lack of exif
+  #
+  # determine length based on count
+  # # BUY YOUR TICKET ACTION (my ticket status)
+  # UPLOAD MEMORY ACTION (memory select date )
+  # Contact Us : Email sji, Telegram suhas (tooltip)
   #
   # reminder email
   # fanout emails for QR Code of ticket with payment processing (template needed )
@@ -107,7 +181,11 @@ defmodule OraWeb.HomeLive do
     OraWeb.Endpoint.subscribe(@topic)
 
     {:ok,
-     assign(socket, time: %{month: nil, order: nil, year: nil}, month: nil, photos: gen_map())}
+     assign(socket, time: %{month: nil, order: nil, year: nil}, month: nil, photos: gen_map(), rsvp: false, memory: false)
+     |> assign(:uploaded_files, [])
+     |> allow_upload(:mmrs, accept: ~w(.jpg .jpeg), max_entries: 2)
+    }
+
   end
 
   def handle_params(_params, _uri, socket) do
@@ -126,30 +204,44 @@ defmodule OraWeb.HomeLive do
      })}
   end
 
-  def handle_event("send_message", payload, socket) do
-    payload =
-      payload
-      |> Map.put(:name, socket.assigns.name)
-      |> Map.put(:id, System.unique_integer([:positive]))
-
-    OraWeb.Endpoint.broadcast(@topic, @event_new_message, payload)
-
+  def handle_event("validate", _params, socket) do
     {:noreply, socket}
   end
 
-  def handle_info(%{topic: @topic, event: @event_new_message, payload: payload}, socket) do
-    {:noreply, assign(socket, messages: socket.assigns.messages ++ [payload])}
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :mmrs, ref)}
   end
 
+ def handle_event("save", _params, socket) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :mmrs, fn %{path: path}, _entry ->
+        dest = Path.join([:code.priv_dir(:ora), "static", "uploads", Path.basename(path)])
+        # You will need to create `priv/static/uploads` for `File.cp!/2` to work.
+        File.cp!(path, dest)
+        {:ok, path}
+      end)
+
+    {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
+  end
+
+
   defp action_handler(%{assigns: %{live_action: action}} = socket)
-       when action in [:rsvp, :welcome, :login] do
+       when action in [:rsvp, :login] do
     socket
     |> assign(:rsvp, true)
+    |> assign(:memory, false)
+  end
+
+  defp action_handler(%{assigns: %{live_action: :upload}} = socket) do
+    socket
+    |> assign(:memory, true)
+    |> assign(:rsvp, false)
   end
 
   defp action_handler(%{assigns: %{live_action: _act}} = socket) do
     socket
     |> assign(:rsvp, false)
+    |> assign(:memory, false)
   end
 
   def gen_map do
@@ -195,4 +287,9 @@ defmodule OraWeb.HomeLive do
   def convert(_) do
     %{month: nil, order: nil, year: nil}
   end
+
+
+  defp error_to_string(:too_large), do: "damn your camera back then bigger than 5megapixel try compress to upload"
+  defp error_to_string(:too_many_files), do: "uploading too many mmrs at once"
+  defp error_to_string(:not_accepted), do: "our stupid ai only understands jpeg/jpg"
 end
