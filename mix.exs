@@ -65,7 +65,7 @@ defmodule Ora.MixProject do
       {:qr_code, "~> 3.0.0"},
       {:uuidv7, "~> 1.0"},
       {:fsmx, "~> 0.5"},
-      #s3 client related
+      # s3 client related
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"}
     ]
@@ -86,7 +86,11 @@ defmodule Ora.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["cmd --cd assets npm install", "tailwind.install --if-missing"],
       "assets.build": ["tailwind default"],
-      "assets.deploy": ["cmd --cd assets node build.js --deploy", "tailwind ora --minify",  "phx.digest"]
+      "assets.deploy": [
+        "cmd --cd assets node build.js --deploy",
+        "tailwind ora --minify",
+        "phx.digest"
+      ]
     ]
   end
 end

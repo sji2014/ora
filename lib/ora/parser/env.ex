@@ -1,5 +1,5 @@
 defmodule Ora.Parser.Env do
-    @moduledoc """
+  @moduledoc """
   Simple parser for .env files.
 
   Supports simple variable–value pairs with upper and lower cased variables. Values are trimmed of extra whitespace.

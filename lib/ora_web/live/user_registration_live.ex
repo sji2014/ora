@@ -33,7 +33,27 @@ defmodule OraWeb.UserRegistrationLive do
 
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:password]} type="password" label="Password" required />
-        <.input field={@form[:class]} type="select" options={["FN401", "FN402", "FN403","FN404", "LE401", "LE402", "LE403", "ML401", "ML402", "ML403", "MN401", "MN402", "MN403"]}label="Graduating Class" required />
+        <.input
+          field={@form[:class]}
+          type="select"
+          options={[
+            "FN401",
+            "FN402",
+            "FN403",
+            "FN404",
+            "LE401",
+            "LE402",
+            "LE403",
+            "ML401",
+            "ML402",
+            "ML403",
+            "MN401",
+            "MN402",
+            "MN403"
+          ]}
+          label="Graduating Class"
+          required
+        />
 
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>

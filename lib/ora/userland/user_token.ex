@@ -122,7 +122,7 @@ defmodule Ora.Userland.UserToken do
             join: user in assoc(token, :user),
             where: token.inserted_at > ago(^days, "day") and token.sent_to == user.email,
             select: user,
-          select_merge: %{session_id: token.id}
+            select_merge: %{session_id: token.id}
 
         {:ok, query}
 

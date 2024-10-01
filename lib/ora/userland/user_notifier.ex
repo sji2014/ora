@@ -1,4 +1,3 @@
-
 defmodule Ora.Userland.UserNotifier do
   import Swoosh.Email
 
@@ -77,7 +76,6 @@ defmodule Ora.Userland.UserNotifier do
     ==============================
     """)
   end
-
 
   @doc """
   Deliver a magic log in link to a user email.

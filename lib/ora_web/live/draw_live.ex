@@ -1,6 +1,7 @@
 defmodule OraWeb.DrawLive do
   use OraWeb, :live_view
   use LiveSvelte.Components
+
   def mount(_, _, socket) do
     socket = assign(socket, pad_id: Ecto.UUID.generate())
 
@@ -17,8 +18,13 @@ defmodule OraWeb.DrawLive do
   def render(assigns) do
     ~H"""
     <div class="flex">
-    <.Draw class="flex1" socket={@socket} allPads={@all_pads} currentPadId={@pad_id} />
-    <.svelte class="flex1" name="Draw" socket={@socket} props={%{allPads: @all_pads, currentPadId: @pad_id}} />
+      <.Draw class="flex1" socket={@socket} allPads={@all_pads} currentPadId={@pad_id} />
+      <.svelte
+        class="flex1"
+        name="Draw"
+        socket={@socket}
+        props={%{allPads: @all_pads, currentPadId: @pad_id}}
+      />
     </div>
     """
   end

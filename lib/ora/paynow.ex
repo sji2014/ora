@@ -17,7 +17,6 @@ defmodule Ora.PayNow do
 
   """
 
-
   def pad_left(str, n, pad_str \\ "0") do
     if String.length(str) >= n do
       str
@@ -35,13 +34,13 @@ defmodule Ora.PayNow do
       scale: 5,
       structure: :minify
     }
+
     opts
-    |> Map.get_and_update(:expiry, &({&1, ndaysaftertoday(&1)}))
+    |> Map.get_and_update(:expiry, &{&1, ndaysaftertoday(&1)})
     |> elem(1)
     |> gen()
     |> QRCode.create(:medium)
     |> QRCode.render(:svg, settings)
-
   end
 
   defp ndaysaftertoday(x) do

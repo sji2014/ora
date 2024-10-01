@@ -45,10 +45,12 @@ defmodule OraWeb.CoreComponents do
   attr :rest, :global
 
   slot :title
+
   slot :confirm do
     attr :type, :string
     attr :form, :string
   end
+
   slot :cancel
 
   def modal(assigns) do
@@ -61,7 +63,7 @@ defmodule OraWeb.CoreComponents do
       class={"fixed z-10 inset-0 overflow-y-auto transition-opacity #{if @show, do: "fade-in", else: "fade-out"}"}
       {@rest}
     >
-      <.focus_wrap  id={"#{@id}-focus-wrap"}>
+      <.focus_wrap id={"#{@id}-focus-wrap"}>
         <div
           class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
           aria-labelledby={"#{@id}-title"}
@@ -291,6 +293,7 @@ defmodule OraWeb.CoreComponents do
   attr :for, :any, required: true, doc: "the data structure for the form"
   attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
   attr :class, :string, default: nil
+
   attr :rest, :global,
     include: ~w(autocomplete name rel action enctype method novalidate target multipart),
     doc: "the arbitrary HTML attributes to apply to the form tag"
@@ -330,9 +333,9 @@ defmodule OraWeb.CoreComponents do
     <button
       type={@type}
       class={[
-      "phx-submit-loading:opacity-75 rounded-lg bg-sji py-2 px-3",
-      "text-sm font-semibold leading-6 text-white active:text-zinc/80",
-      @class
+        "phx-submit-loading:opacity-75 rounded-lg bg-sji py-2 px-3",
+        "text-sm font-semibold leading-6 text-white active:text-zinc/80",
+        @class
       ]}
       {@rest}
     >

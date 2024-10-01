@@ -52,7 +52,7 @@ defmodule OraWeb do
   def live_view do
     quote do
       use Phoenix.LiveView
-        # layout: {OraWeb.Layouts, :app}
+      # layout: {OraWeb.Layouts, :app}
 
       unquote(html_helpers())
     end

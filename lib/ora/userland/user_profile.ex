@@ -16,7 +16,21 @@ defmodule Ora.Userland.UserProfile do
     # telegram handle
     user
     |> cast(attrs, [:full_name, :tg_handle, :comments, :grad_class, :grad_year])
-    |> validate_inclusion(:grad_class, ["FN401", "FN402", "FN403","FN404", "LE401", "LE402", "LE403", "ML401", "ML402", "ML403", "MN401", "MN402", "MN403"])
+    |> validate_inclusion(:grad_class, [
+      "FN401",
+      "FN402",
+      "FN403",
+      "FN404",
+      "LE401",
+      "LE402",
+      "LE403",
+      "ML401",
+      "ML402",
+      "ML403",
+      "MN401",
+      "MN402",
+      "MN403"
+    ])
     |> validate_length(:full_name, max: 88)
     |> validate_length(:comments, max: 150)
   end

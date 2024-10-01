@@ -361,7 +361,6 @@ defmodule Ora.Userland do
     end
   end
 
-
   @doc ~S"""
   Delivers magic log in link to the given user.
 

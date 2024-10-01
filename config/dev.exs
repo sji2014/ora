@@ -30,7 +30,6 @@ config :ora, OraWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:ora, ~w(--watch)]}
   ]
 
-
 # MINIO Object Store API Domain
 config :ex_aws, :s3,
   scheme: "http://",
@@ -41,7 +40,6 @@ config :ex_aws, :retries,
   max_attempts: 2,
   base_backoff_in_ms: 10,
   max_backoff_in_ms: 10_000
-
 
 # ## SSL Support
 #

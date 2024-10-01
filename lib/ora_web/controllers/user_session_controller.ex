@@ -22,7 +22,6 @@ defmodule OraWeb.UserSessionController do
     end
   end
 
-
   def create(conn, %{"_action" => "password_updated"} = params) do
     conn
     |> put_session(:user_return_to, ~p"/users/settings")
@@ -34,7 +33,6 @@ defmodule OraWeb.UserSessionController do
   end
 
   defp create(conn, %{"user" => %{"email" => email, "password" => password} = user_params}, info) do
-
     if user = Userland.get_user_by_email_and_password(email, password) do
       conn
       |> put_flash(:info, info)
@@ -49,10 +47,10 @@ defmodule OraWeb.UserSessionController do
   end
 
   defp create(conn, _, _info) do
-      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
-      conn
-      |> put_flash(:error, "Invalid email or password")
-      |> redirect(to: ~p"/invite")
+    # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+    conn
+    |> put_flash(:error, "Invalid email or password")
+    |> redirect(to: ~p"/invite")
   end
 
   def delete(conn, _params) do

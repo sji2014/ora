@@ -117,17 +117,14 @@ if config_env() == :prod do
   #
 
   config :ora, Ora.Mailer,
-  adapter: Swoosh.Adapters.AmazonSES,
-  region: "ap-southeast-1",
-  access_key: System.get_env("SES_ACCESS_KEY_ID"),
-  secret: System.get_env("SES_SECRET_ACCESS_KEY")
-  
+    adapter: Swoosh.Adapters.AmazonSES,
+    region: "ap-southeast-1",
+    access_key: System.get_env("SES_ACCESS_KEY_ID"),
+    secret: System.get_env("SES_SECRET_ACCESS_KEY")
+
   config :swoosh,
-  api_client: Swoosh.ApiClient.Finch,
-  finch_name: Ora.Finch
-
-  else
-
-    Ora.Parser.Env.load_file(".env")
-
+    api_client: Swoosh.ApiClient.Finch,
+    finch_name: Ora.Finch
+else
+  Ora.Parser.Env.load_file(".env")
 end

@@ -10,9 +10,7 @@ defmodule Ora.EventsFixtures do
   def pass_fixture(attrs \\ %{}) do
     {:ok, pass} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Ora.Events.create_pass()
 
     pass

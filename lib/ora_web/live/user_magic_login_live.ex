@@ -7,7 +7,7 @@ defmodule OraWeb.UserMagicLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div :if={@step == :login}  animate-fade duration-1000 class="mx-auto max-w-2xl">
+    <div :if={@step == :login} animate-fade duration-1000 class="mx-auto max-w-2xl">
       <.header class="text-center flex-none">
         Log in
         <:subtitle>

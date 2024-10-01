@@ -2,11 +2,13 @@ defmodule Ora.Events.Pass do
   use Ecto.Schema
   import Ecto.Changeset
 
-  use Fsmx.Struct, state_field: :state, transitions: %{
-    :"*" => ["gen"],
-    :gen => "paid",
-    :active => "attend",
-  }
+  use Fsmx.Struct,
+    state_field: :state,
+    transitions: %{
+      :* => ["gen"],
+      :gen => "paid",
+      :active => "attend"
+    }
 
   @primary_key {:id, UUIDv7, autogenerate: true}
   @foreign_key_type :binary_id
